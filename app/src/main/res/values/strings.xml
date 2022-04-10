@@ -1,3 +1,76 @@
 <resources>
-    <string name="app_name">FindingNemo</string>
+    <string name="app_name">Location Tracker</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="get_location_through_gps">Get Location Through GPS</string>
+    <string name="get_location_through_network">Get Location Through Network</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="re_enter_password">Re-enter Password</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="login_to_your_account">Login to Your Account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="appicon">AppIcon</string>
+    <string name="not_have_an_account_click_here">Not have an Account? Click Here!</string>
+    <string name="already_have_an_account_click_here">Already have an Account? Click Here!</string>
+    <string name="logout">Logout</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign in</string>
+    <string name="profile">Profile</string>
+    <string name="email_not_verified">Email Not Verified</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_maps2">MapsActivity2</string>
+    <string name="location_tracker">Location Tracker</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="name_here">Name Here</string>
+    <string name="_0_0">0.0</string>
+    <string name="refresh_location">Refresh Location</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="share_location">Share Location</string>
+    <string name="your_message">Your Message</string>
+    <string name="last_known_location">Last Known Location</string>
+    <string name="update_location">Update Location</string>
+    <string name="navigate">Navigate</string>
+    <string name="android_application">Android Application</string>
+    <string name="title_required">Title (Required)</string>
+    <string name="current_location">Current Location</string>
+    <string name="default_notification_channel_id">myApp</string>
+    <string name="default_notification_channel_name">locationTracker</string>
+    <string name="msg_token_fmt" />
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="join_a_group">Join Group</string>
+    <string name="make_a_group">Make group</string>
+    <string name="group_name">Group Name</string>
+    <string name="create_a_group">Create a Group</string>
+    <string name="add_email">Add Email</string>
+    <string name="add_members">Add Members</string>
+    <string name="add_name">Add Name</string>
+    <string name="member_information">Member Information</string>
+    <string name="add_member">Add Member</string>
+    <string name="added_members">Added Members</string>
+    <string name="member_email">Member Email</string>
+    <string name="done">Done</string>
+    <string name="my_groups">My Groups</string>
+    <string name="my_profile">My Profile</string>
+    <string name="created">Created</string>
+    <string name="participants">Participants</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="add_icon">Add Icon</string>
+    <string name="joined_groups">Joined Groups</string>
+    <string name="title_activity_geo_fencing">GeoFencing</string>
+
+    <string name="background_location_permission_message">
+       <b>Allow only while using the app</b> permission has been granted. If you want
+        to get location updates in the background even when not using the app then grant
+        <b>Allow all the time</b> permission
+    </string>
+    <string name="add_tracking_location">Add Tracking location</string>
+    <string name="current_tracking_location">Current Tracking Location</string>
 </resources>
