@@ -14,15 +14,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.latlong.googleMaps.MapsActivity;
-import com.google.firebase.auth.FirebaseAuth;
-
 public class SplashActivity extends AppCompatActivity {
 
     Animation topAnim, bottomAnim;
     ImageView logoImage;
     TextView textView1, textView2;
-    FirebaseAuth fAuth;
+//    FirebaseAuth fAuth;
     private static final int SPLASH_SCREEN = 3000;
 
     @Override
@@ -31,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
-        fAuth = FirebaseAuth.getInstance();
+//        fAuth = FirebaseAuth.getInstance();
 
         topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animation);
         bottomAnim = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
@@ -49,15 +46,15 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(message != null) {
-                    if (fAuth.getCurrentUser() != null) {
-                        Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                        i.putExtra("body", getIntent().getStringExtra("message"));
-                        startActivity(i);
-                        SplashActivity.this.finish();
-                    }
-                }
-                else if(message == null) {
+//                if(message != null) {
+//                    if (fAuth.getCurrentUser() != null) {
+//                        Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+//                        i.putExtra("body", getIntent().getStringExtra("message"));
+//                        startActivity(i);
+//                        SplashActivity.this.finish();
+//                    }
+//                }
+//                else if(message == null) {
                     Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     Pair[] pairs = new Pair[2];
                     pairs[0] = new Pair<View, String>(logoImage, "logo_image");
@@ -67,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     startActivity(intent, options.toBundle());
                     SplashActivity.this.finish();
-                }
+//                }
             }
         }, SPLASH_SCREEN);
     }

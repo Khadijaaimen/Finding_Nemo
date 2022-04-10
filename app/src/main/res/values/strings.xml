@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location Tracker</string>
+    <string name="app_name">Finding Nemo</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="get_location_through_gps">Get Location Through GPS</string>
@@ -9,11 +9,7 @@
     <string name="enter_password">Enter Password</string>
     <string name="enter_email">Enter Email</string>
     <string name="enter_name">Enter Name</string>
-    <string name="create_new_account">Create New Account</string>
     <string name="login_to_your_account">Login to Your Account</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
     <string name="appicon">AppIcon</string>
     <string name="not_have_an_account_click_here">Not have an Account? Click Here!</string>
     <string name="already_have_an_account_click_here">Already have an Account? Click Here!</string>
@@ -30,8 +26,6 @@
     <string name="name_here">Name Here</string>
     <string name="_0_0">0.0</string>
     <string name="refresh_location">Refresh Location</string>
-    <string name="full_name">Full Name</string>
-    <string name="email_address">Email Address</string>
     <string name="share_location">Share Location</string>
     <string name="your_message">Your Message</string>
     <string name="last_known_location">Last Known Location</string>
@@ -73,4 +67,16 @@
     </string>
     <string name="add_tracking_location">Add Tracking location</string>
     <string name="current_tracking_location">Current Tracking Location</string>
+    <string name="login">Login</string>
+    <string name="hello_there_welcome">Hello There, Welcome!</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="welcome_here">Welcome Here</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="xxxxxx">XXXXXX</string>
+    <string name="make_sure_to_save_this_code_for_later_use">Make sure you save this code for later use.</string>
+    <string name="next">next</string>
+    <string name="register">Register</string>
 </resources>
