@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/groups"
+        android:title="@string/groups">
+
+        <menu>
+            <item
+                android:id="@+id/nav_groups"
+                android:icon="@drawable/ic_outline_groups_24"
+                android:title="@string/my_groups" />
+
+            <item
+                android:id="@+id/nav_joined"
+                android:icon="@drawable/groups"
+                android:title="@string/joined_groups" />
+
+            <item
+                android:id="@+id/nav_join"
+                android:icon="@drawable/ic_group_add"
+                android:title="@string/join_a_group" />
+
+            <item
+                android:id="@+id/nav_invite"
+                android:icon="@drawable/ic_group_add"
+                android:title="@string/invite_member" />
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/location"
+        android:title="@string/location">
+
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_outline_share_location_24"
+                android:title="@string/share_location" />
+
+            <item
+                android:id="@+id/nav_stop_sharing"
+                android:icon="@drawable/ic_outline_location_disabled_24"
+                android:title="@string/stop_sharing_location" />
+
+        </menu>
+    </item>
+
+    <item android:id="@+id/profile"
+        android:title="@string/profile">
+        <menu>
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_outline_person_outline_24"
+            android:title="@string/my_profile" />
+
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_round_logout_24"
+            android:title="@string/logout" />
+        </menu>
+    </item>
+</menu>

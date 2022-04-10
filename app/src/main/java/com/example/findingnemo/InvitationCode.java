@@ -83,7 +83,7 @@ public class InvitationCode extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            Intent intent1 = new Intent(InvitationCode.this, NavigationActivity.class);
+                            Intent intent1 = new Intent(InvitationCode.this, MyNavigation.class);
                             Toast.makeText(getApplicationContext(), "User Registered successfully.", Toast.LENGTH_SHORT).show();
                             startActivity(intent1);
                         } else {

@@ -17,9 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindingNemo">
         <activity
-            android:name=".NavigationActivity"
-            android:exported="false" />
-        <activity
             android:name=".InvitationCode"
             android:exported="false" />
         <activity

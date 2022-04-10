@@ -31,11 +31,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     ProgressBar progressBar;
     GoogleSignInClient mGoogleSignInClient;
     FirebaseUser acct;
+    AuthCredential credential;
+    String intentFrom;
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -65,9 +69,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                         String userCode = snapshot.child("code").getValue(String.class);
+                        intentFrom = "onStart";
 
-                        Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
+                        Intent intent = new Intent(MainActivity.this, MyNavigation.class);
                         intent.putExtra("userCode", userCode);
+                        intent.putExtra("intentFrom",intentFrom);
+
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
                     }
@@ -156,34 +163,47 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(MainActivity.this, InvitationCode.class);
-                            Random r = new Random();
-                            int n = 100000 + r.nextInt(900000);
-                            String code = String.valueOf(n);
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
-                            intent.putExtra("code", code);
-                            intent.putExtra("isSharing", false);
+        fAuth.fetchSignInMethodsForEmail(Objects.requireNonNull(account.getEmail())).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                if(task.isSuccessful()){
+                    onStart();
+                } else{
+                    mAuth.signInWithEmailAndPassword(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Intent intent = new Intent(MainActivity.this, InvitationCode.class);
+                                Random r = new Random();
+                                int n = 100000 + r.nextInt(900000);
+                                String code = String.valueOf(n);
 
-                            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child("code").setValue(code);
+                                intentFrom = "google";
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            startActivity(intent);
-                            progressBar.setVisibility(View.GONE);
+                                intent.putExtra("code", code);
+                                intent.putExtra("isSharing", false);
+                                intent.putExtra("intentFrom", intentFrom);
 
-                        } else {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(MainActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("code").setValue(code);
+
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
+                                progressBar.setVisibility(View.GONE);
+
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(MainActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
     }
 
 
