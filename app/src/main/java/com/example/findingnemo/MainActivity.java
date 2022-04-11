@@ -36,7 +36,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karan.churi.PermissionManager.PermissionManager;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     FirebaseUser acct;
     AuthCredential credential;
     String intentFrom;
+    PermissionManager permission;
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         acct = FirebaseAuth.getInstance().getCurrentUser();
         if (isNetwork(getApplicationContext())) {
             if (acct != null) {
+                permission = new PermissionManager() {};
+                permission.checkAndRequestPermissions(this);
+
                 FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -102,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         progressBar = findViewById(R.id.progressBarSignBtn);
         mAuth = FirebaseAuth.getInstance();
 
+        permission = new PermissionManager() {};
+        permission.checkAndRequestPermissions(this);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("321727690748-eb5mvpu5b5gq1h0gcvf34e5v3kv31e9s.apps.googleusercontent.com")
                 .requestEmail()
@@ -124,6 +133,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permission.checkResult(requestCode, permissions, grantResults);
+
+        ArrayList<String> denied_permissions = permission.getStatus().get(0).denied;
+
+        if(denied_permissions.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void signIn() {
@@ -173,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 if(task.isSuccessful()){
                     onStart();
                 } else{
-                    mAuth.signInWithEmailAndPassword(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
