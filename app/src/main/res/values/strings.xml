@@ -102,4 +102,8 @@
     <string name="invite_member">Invite Member</string>
     <string name="location">Location</string>
     <string name="stop_sharing_location">Stop Sharing Location</string>
+
+    <string name="close">Drawer Closed</string>
+    <string name="open">Drawer Opened</string>
+
 </resources>
