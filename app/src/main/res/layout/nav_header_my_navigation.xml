@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/mitr_reg"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:text="@string/nav_header_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/mitr_reg"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="@string/nav_header_subtitle" />
 <!--    </LinearLayout>-->
 

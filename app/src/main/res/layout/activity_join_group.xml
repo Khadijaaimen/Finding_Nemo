@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    android:background="@drawable/background_logo"
+    android:layout_gravity="center_vertical"
+    tools:context=".JoinGroup">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/appicon"
+        android:transitionName="logo_image"
+        app:srcCompat="@drawable/logo_image" />
+
+    <TextView
+        android:layout_below="@id/icon"
+        android:id="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_code_to_join_group"
+        android:fontFamily="@font/mitr_reg"
+        android:textSize="20sp"
+        android:gravity="center" />
+
+
+    <com.goodiebag.pinview.Pinview
+        android:id="@+id/joinPin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginTop="20dp"
+        app:cursorVisible="true"
+        app:forceKeyboard="true"
+        app:inputType="number"
+        app:pinHeight="40dp"
+        app:pinLength="6"
+        app:pinWidth="35dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/joinPin"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/mitr_medium"
+        android:gravity="center"
+        android:text="@string/join_a_group"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

@@ -105,5 +105,7 @@
 
     <string name="close">Drawer Closed</string>
     <string name="open">Drawer Opened</string>
+    <string name="enter_code_to_join_group">Enter Code to Join Group</string>
+    <string name="share_location_code"><![CDATA[Share Location & Code]]></string>
 
 </resources>

@@ -1,19 +1,29 @@
 package com.example.findingnemo;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,8 +36,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -37,13 +49,22 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
-public class MyNavigation extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+public class MyNavigation extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        , OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     String intentFrom, code;
     GoogleSignInClient mGoogleSignInClient;
     GoogleSignInAccount acct;
     GoogleMap mMap;
+    GoogleApiClient client;
+    FirebaseAuth auth;
+    LocationRequest request;
+    LatLng latLng;
+    TextView name, email;
+    ImageView icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +73,8 @@ public class MyNavigation extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        auth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("321727690748-eb5mvpu5b5gq1h0gcvf34e5v3kv31e9s.apps.googleusercontent.com")
@@ -63,11 +86,11 @@ public class MyNavigation extends AppCompatActivity implements NavigationView.On
         acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
         Intent intent = getIntent();
-        if(intent!=null){
+        if (intent != null) {
             intentFrom = intent.getStringExtra("intentFrom");
-            if(intentFrom.equals("google")){
+            if (intentFrom.equals("google")) {
                 code = getIntent().getStringExtra("code");
-            } else{
+            } else {
                 code = getIntent().getStringExtra("userCode");
             }
         }
@@ -83,6 +106,16 @@ public class MyNavigation extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        name = header.findViewById(R.id.userName);
+        email = header.findViewById(R.id.userEmail);
+        icon = header.findViewById(R.id.userIcon);
+
+        name.setText(acct.getDisplayName());
+        email.setText(acct.getEmail());
+        Picasso.get().load(acct.getPhotoUrl()).into(icon);
+
     }
 
     public void onBackPressed() {
@@ -123,21 +156,25 @@ public class MyNavigation extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-        if(id == R.id.nav_profile){
+        if (id == R.id.nav_profile) {
 
-        } else if(id == R.id.nav_groups){
+        } else if (id == R.id.nav_groups) {
 
-        } else if(id == R.id.nav_join){
+        } else if (id == R.id.nav_join) {
 
-        } else if(id == R.id.nav_invite){
+        } else if (id == R.id.nav_invite) {
 
-        } else if(id == R.id.nav_joined){
+        } else if (id == R.id.nav_joined) {
 
-        } else if(id == R.id.nav_share){
+        } else if (id == R.id.nav_share) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT, "My Location is: " + "https://www.google.com/maps/0" + latLng.latitude + ", " + latLng.longitude + ",17z" + "/n My Invitation Code is: " + code);
+            startActivity(Intent.createChooser(i, "Share Using: "));
 
-        } else if(id == R.id.nav_stop_sharing){
+        } else if (id == R.id.nav_stop_sharing) {
 
-        } else if(id == R.id.nav_logout){
+        } else if (id == R.id.nav_logout) {
             if (acct != null) {
                 FirebaseAuth.getInstance().signOut();
 
@@ -166,9 +203,51 @@ public class MyNavigation extends AppCompatActivity implements NavigationView.On
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        client = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        client.connect();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        request = new com.google.android.gms.location.LocationRequest().create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setInterval(1000);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        if(location == null){
+            Toast.makeText(getApplicationContext(), "Couldn't get location", Toast.LENGTH_SHORT).show();
+        } else{
+            mMap.clear();
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions options = new MarkerOptions();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            options.position(latLng);
+            options.title("Current Location");
+            mMap.addMarker(options);
+
+        }
     }
 }

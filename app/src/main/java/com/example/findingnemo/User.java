@@ -3,7 +3,7 @@ package com.example.findingnemo;
 import android.net.Uri;
 
 public class User {
-    String userName, email, code, uri, isSharing, latitude, longitude;
+    String userName, email, code, uri, isSharing, latitude, longitude, userId;
 
     public User(String userName, String email, String code, String uri, String isSharing, String latitude, String longitude) {
         this.userName = userName;
@@ -69,5 +69,13 @@ public class User {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
