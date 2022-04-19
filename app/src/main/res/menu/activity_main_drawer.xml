@@ -5,23 +5,18 @@
 
     <item
         android:id="@+id/groups"
-        android:title="@string/groups">
+        android:title="@string/circle">
 
         <menu>
             <item
                 android:id="@+id/nav_groups"
                 android:icon="@drawable/ic_outline_groups_24"
-                android:title="@string/my_groups" />
-
-            <item
-                android:id="@+id/nav_joined"
-                android:icon="@drawable/groups"
-                android:title="@string/joined_groups" />
+                android:title="@string/my_circle" />
 
             <item
                 android:id="@+id/nav_join"
                 android:icon="@drawable/ic_group_add"
-                android:title="@string/join_a_group" />
+                android:title="@string/join_circle" />
 
             <item
                 android:id="@+id/nav_invite"
@@ -29,24 +24,6 @@
                 android:title="@string/invite_member" />
         </menu>
 
-    </item>
-
-    <item
-        android:id="@+id/location"
-        android:title="@string/location">
-
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_outline_share_location_24"
-                android:title="@string/share_location_code" />
-
-            <item
-                android:id="@+id/nav_stop_sharing"
-                android:icon="@drawable/ic_outline_location_disabled_24"
-                android:title="@string/stop_sharing_location" />
-
-        </menu>
     </item>
 
     <item android:id="@+id/profile"

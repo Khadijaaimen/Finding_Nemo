@@ -21,7 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindingNemo">
         <activity
-            android:name=".JoinGroup"
+            android:name=".circleActivities.MyGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".circleActivities.JoinGroupActivity"
             android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -39,23 +42,20 @@
             android:value="AIzaSyCLKgsn7Pk0yYYBdDnKJPVGcFG0GLKgHSc" />
 
         <activity
-            android:name=".MyNavigation"
+            android:name=".googleMaps.MyNavigationActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".circleActivities.InvitationCodeActivity"
             android:exported="false" />
         <activity
-            android:name=".InvitationCode"
-            android:exported="false" />
+            android:name=".generalActivities.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".SignUpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SplashActivity"
-            android:exported="true">
+            android:name=".generalActivities.SplashActivity"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

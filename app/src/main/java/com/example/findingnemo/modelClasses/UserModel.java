@@ -1,18 +1,18 @@
-package com.example.findingnemo;
+package com.example.findingnemo.modelClasses;
 
-import android.net.Uri;
+public class UserModel {
+    public String userId;
+    String userName, email, code, uri, isSharing, userLatitude, userLongitude;
 
-public class User {
-    String userName, email, code, uri, isSharing, latitude, longitude, userId;
-
-    public User(String userName, String email, String code, String uri, String isSharing, String latitude, String longitude) {
+    public UserModel(String userName, String email, String code, String uri, String isSharing, String latitude, String longitude, String userId) {
         this.userName = userName;
         this.email = email;
         this.code = code;
         this.uri = uri;
         this.isSharing = isSharing;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.userLatitude = latitude;
+        this.userLongitude = longitude;
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -55,20 +55,20 @@ public class User {
         this.isSharing = isSharing;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public String getUserLatitude() {
+        return userLatitude;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setUserLatitude(String latitude) {
+        this.userLatitude = latitude;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public String getUserLongitude() {
+        return userLongitude;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setUserLongitude(String longitude) {
+        this.userLongitude = longitude;
     }
 
     public String getUserId() {

@@ -107,5 +107,14 @@
     <string name="open">Drawer Opened</string>
     <string name="enter_code_to_join_group">Enter Code to Join Group</string>
     <string name="share_location_code"><![CDATA[Share Location & Code]]></string>
+    <string name="circle">Circle</string>
+    <string name="my_circle">My Circle</string>
+    <string name="join_circle">Join Circle</string>
+    <string name="do_you_want_to_add_geofence">Do you want to add geofence? Please press <b><i>Yes</i></b> to continue.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="ok_continue">Ok, Continue</string>
+
+    <string name="texts">A map will be shown to you. You need to press for a few seconds on map to add geofence at your desired location.</string>
 
 </resources>

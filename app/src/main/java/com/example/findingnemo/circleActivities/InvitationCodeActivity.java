@@ -1,4 +1,4 @@
-package com.example.findingnemo;
+package com.example.findingnemo.circleActivities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.findingnemo.R;
+import com.example.findingnemo.googleMaps.MyNavigationActivity;
+import com.example.findingnemo.modelClasses.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -22,20 +25,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-public class InvitationCode extends AppCompatActivity {
+public class InvitationCodeActivity extends AppCompatActivity {
 
-    GoogleSignInAccount acct;
-    GoogleSignInClient mGoogleSignInClient;
-    String name, email, code;
+    String name, email, code, oldLatitude, oldLongitude;
     Uri photoUri;
     TextView inviteCode;
     Button nextButton;
     Boolean isSharing;
-    User users;
+    UserModel users;
     ProgressBar progressBar;
+    GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInAccount acct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +49,12 @@ public class InvitationCode extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent!=null){
+            oldLatitude = intent.getStringExtra("latitudeFromGoogle");
+            oldLongitude = intent.getStringExtra("longitudeFromGoogle");
             code = intent.getStringExtra("code");
             isSharing = intent.getBooleanExtra("isSharing", false);
-
         }
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("321727690748-eb5mvpu5b5gq1h0gcvf34e5v3kv31e9s.apps.googleusercontent.com")
                 .requestEmail()
@@ -79,13 +82,13 @@ public class InvitationCode extends AppCompatActivity {
 
                 DatabaseReference reference = FirebaseDatabase.getInstance("https://finding-nemo-3e2fd-default-rtdb.firebaseio.com/").getReference("users");
 
-                users = new User(name, email, code, photoUri.toString(), isSharing.toString(), "0.0", "0.0");
+                users = new UserModel(name, email, code, photoUri.toString(), isSharing.toString(), oldLatitude, oldLongitude, uid);
 
                 reference.child(uid).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
-                            Intent intent1 = new Intent(InvitationCode.this, MyNavigation.class);
+                            Intent intent1 = new Intent(InvitationCodeActivity.this, MyNavigationActivity.class);
                             Toast.makeText(getApplicationContext(), "User Registered successfully.", Toast.LENGTH_SHORT).show();
                             startActivity(intent1);
                         } else {

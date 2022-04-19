@@ -1,4 +1,4 @@
-package com.example.findingnemo;
+package com.example.findingnemo.generalActivities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.findingnemo.R;
 
 public class SplashActivity extends AppCompatActivity {
 

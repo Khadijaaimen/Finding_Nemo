@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_logo"
-    android:layout_gravity="center_vertical"
-    tools:context=".JoinGroup">
+    android:padding="30dp"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:contentDescription="@string/appicon"
         android:transitionName="logo_image"
         app:srcCompat="@drawable/logo_image" />
 
     <TextView
-        android:layout_below="@id/icon"
-        android:id="@+id/textView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="50dp"
+        android:id="@+id/joinText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/enter_code_to_join_group"
-        android:fontFamily="@font/mitr_reg"
         android:textSize="20sp"
-        android:gravity="center" />
-
+        android:layout_below="@+id/icon"
+        android:layout_margin="30dp"
+        android:gravity="center"
+        android:fontFamily="@font/mitr_reg"
+        />
 
     <com.goodiebag.pinview.Pinview
-        android:id="@+id/joinPin"
+        android:id="@+id/pinView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView"
-        android:layout_marginTop="20dp"
-        app:cursorVisible="true"
-        app:forceKeyboard="true"
-        app:inputType="number"
-        app:pinHeight="40dp"
+        android:layout_below="@id/joinText"
+        app:pinHeight="35dp"
         app:pinLength="6"
-        app:pinWidth="35dp" />
+        app:pinWidth="35dp"
+        android:focusable="true"
+        app:forceKeyboard="true"
+        app:cursorVisible="true"
+        app:inputType="number"
+        />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/joinBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_below="@id/joinPin"
-        android:layout_marginTop="50dp"
-        android:fontFamily="@font/mitr_medium"
-        android:gravity="center"
+        android:layout_below="@id/pinView"
+        android:layout_marginTop="60dp"
         android:text="@string/join_a_group"
-        android:textSize="18sp" />
-
-
+        android:textSize="18sp"
+        android:fontFamily="@font/mitr_medium"
+        />
 </RelativeLayout>
