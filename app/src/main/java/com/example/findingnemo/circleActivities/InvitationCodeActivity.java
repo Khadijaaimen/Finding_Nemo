@@ -82,7 +82,7 @@ public class InvitationCodeActivity extends AppCompatActivity {
 
                 DatabaseReference reference = FirebaseDatabase.getInstance("https://finding-nemo-3e2fd-default-rtdb.firebaseio.com/").getReference("users");
 
-                users = new UserModel(name, email, code, photoUri.toString(), isSharing.toString(), oldLatitude, oldLongitude, uid);
+//                users = new UserModel(name, email, code, photoUri.toString(), isSharing.toString(), oldLatitude, oldLongitude, uid);
 
                 reference.child(uid).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

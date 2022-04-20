@@ -2,17 +2,20 @@ package com.example.findingnemo.modelClasses;
 
 public class UserModel {
     public String userId;
-    String userName, email, code, uri, isSharing, userLatitude, userLongitude;
+    String userName, email, code, uri, isSharing;
+    Double  userLatitude, userLongitude, geofenceLat, geofenceLong;
 
-    public UserModel(String userName, String email, String code, String uri, String isSharing, String latitude, String longitude, String userId) {
+    public UserModel(String userId, String userName, String email, String code, String uri, String isSharing, Double userLatitude, Double userLongitude, Double geofenceLat, Double geofenceLong) {
+        this.userId = userId;
         this.userName = userName;
         this.email = email;
         this.code = code;
         this.uri = uri;
         this.isSharing = isSharing;
-        this.userLatitude = latitude;
-        this.userLongitude = longitude;
-        this.userId = userId;
+        this.userLatitude = userLatitude;
+        this.userLongitude = userLongitude;
+        this.geofenceLat = geofenceLat;
+        this.geofenceLong = geofenceLong;
     }
 
     public String getUserName() {
@@ -55,27 +58,43 @@ public class UserModel {
         this.isSharing = isSharing;
     }
 
-    public String getUserLatitude() {
-        return userLatitude;
-    }
-
-    public void setUserLatitude(String latitude) {
-        this.userLatitude = latitude;
-    }
-
-    public String getUserLongitude() {
-        return userLongitude;
-    }
-
-    public void setUserLongitude(String longitude) {
-        this.userLongitude = longitude;
-    }
-
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Double getUserLatitude() {
+        return userLatitude;
+    }
+
+    public void setUserLatitude(Double userLatitude) {
+        this.userLatitude = userLatitude;
+    }
+
+    public Double getUserLongitude() {
+        return userLongitude;
+    }
+
+    public void setUserLongitude(Double userLongitude) {
+        this.userLongitude = userLongitude;
+    }
+
+    public Double getGeofenceLat() {
+        return geofenceLat;
+    }
+
+    public void setGeofenceLat(Double geofenceLat) {
+        this.geofenceLat = geofenceLat;
+    }
+
+    public Double getGeofenceLong() {
+        return geofenceLong;
+    }
+
+    public void setGeofenceLong(Double geofenceLong) {
+        this.geofenceLong = geofenceLong;
     }
 }

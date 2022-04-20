@@ -25,7 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class JoinGroupActivity extends AppCompatActivity {
+public class
+JoinGroupActivity extends AppCompatActivity {
 
     Pinview pinview;
     Button join;
@@ -65,11 +66,13 @@ public class JoinGroupActivity extends AppCompatActivity {
                                 String email = ds.child("email").getValue(String.class);
                                 String code = ds.child("code").getValue(String.class);
                                 String isSharing = ds.child("isSharing").getValue(String.class);
-                                String lat = ds.child("latitude").getValue(String.class);
-                                String lng = ds.child("longitude").getValue(String.class);
+                                Double lat = ds.child("userLatitude").getValue(Double.class);
+                                Double lng = ds.child("userLongitude").getValue(Double.class);
                                 String uri = ds.child("uri").getValue(String.class);
                                 String userId = ds.child("userId").getValue(String.class);
-                                user1 = new UserModel(name, email, code, uri, isSharing, lat, lng, userId);
+                                Double geoLat = ds.child("geofenceLat").getValue(Double.class);
+                                Double geoLong = ds.child("geofenceLong").getValue(Double.class);
+                                user1 = new UserModel(userId, name, email, code, uri, isSharing, lat, lng, geoLat, geoLong);
                                 join_user_id = user1.userId;
 
                                 groupReference = FirebaseDatabase.getInstance().getReference("users")

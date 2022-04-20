@@ -22,6 +22,7 @@ import com.example.findingnemo.circleActivities.InvitationCodeActivity;
 import com.example.findingnemo.googleMaps.GpsTracker;
 import com.example.findingnemo.googleMaps.MyNavigationActivity;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -80,25 +81,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                                 String userCode = snapshot.child("code").getValue(String.class);
+                                Double latCard = snapshot.child("userLatitude").getValue(Double.class);
+                                Double longCard = snapshot.child("userLongitude").getValue(Double.class);
+                                Double latGeo = snapshot.child("geofenceLat").getValue(Double.class);
+                                Double longGeo = snapshot.child("geofenceLong").getValue(Double.class);
                                 intentFrom = "onStart";
 
                                 Intent intent = new Intent(MainActivity.this, MyNavigationActivity.class);
                                 intent.putExtra("userCode", userCode);
                                 intent.putExtra("intentFrom", intentFrom);
 
-                                gpsTracker = new GpsTracker(MainActivity.this);
-                                if (gpsTracker.canGetLocation()) {
-                                    latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
-                                    longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
-                                    newLatitude = String.valueOf(latitudeRefresh);
-                                    newLongitude = String.valueOf(longitudeRefresh);
-                                } else {
-                                    gpsTracker.showSettingsAlert();
-                                }
-                                intent.putExtra("latitudeFromGoogle", newLatitude);
-                                intent.putExtra("longitudeFromGoogle", newLongitude);
+                                intent.putExtra("latitudeFromStart", latCard);
+                                intent.putExtra("longitudeFromStart", longCard);
+                                intent.putExtra("geoLat", latGeo);
+                                intent.putExtra("geoLong", longGeo);
 
                                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
@@ -109,6 +106,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                             }
                         });
+
+//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                        .requestIdToken("27273984511-ljcd4cm9ccae3e758e9fl37d57sq5me3.apps.googleusercontent.com")
+//                        .requestEmail()
+//                        .build();
+//
+//                mGoogleSignInClient = GoogleSignIn.getClient(getApplicationContext(), gso);
+//                if (acct != null) {
+//                    mAuth.signOut();
+//
+//                    mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            if (task.isSuccessful()) {
+//                                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                Toast.makeText(getApplicationContext(), "Signed out from google", Toast.LENGTH_SHORT).show();
+//                                startActivity(intent);
+//                                finish();
+//                            } else {
+//                                Toast.makeText(getApplicationContext(), "Session not closed", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//                }
 
             } else {
                 progressBar.setVisibility(View.GONE);
@@ -206,84 +228,83 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    fAuth.fetchSignInMethodsForEmail(Objects.requireNonNull(account.getEmail())).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                            if(task.isSuccessful()){
-                                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                String userCode = snapshot.child("code").getValue(String.class);
-                                                intentFrom = "onStart";
+                    FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String userCode = snapshot.child("code").getValue(String.class);
+                                        Double latCard = snapshot.child("userLatitude").getValue(Double.class);
+                                        Double longCard = snapshot.child("userLongitude").getValue(Double.class);
+                                        Double latGeo = snapshot.child("geofenceLat").getValue(Double.class);
+                                        Double longGeo = snapshot.child("geofenceLong").getValue(Double.class);
+                                        intentFrom = "onStart";
 
-                                                Intent intent = new Intent(MainActivity.this, MyNavigationActivity.class);
-                                                intent.putExtra("userCode", userCode);
+                                        Intent intent = new Intent(MainActivity.this, MyNavigationActivity.class);
+                                        intent.putExtra("userCode", userCode);
+                                        intent.putExtra("intentFrom", intentFrom);
 
-                                                gpsTracker = new GpsTracker(MainActivity.this);
-                                                if (gpsTracker.canGetLocation()) {
-                                                    latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
-                                                    longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
-                                                    newLatitude = String.valueOf(latitudeRefresh);
-                                                    newLongitude = String.valueOf(longitudeRefresh);
-                                                } else {
-                                                    gpsTracker.showSettingsAlert();
-                                                }
+                                        intent.putExtra("latitudeFromStart", latCard);
+                                        intent.putExtra("longitudeFromStart", longCard);
+                                        intent.putExtra("geoLat", latGeo);
+                                        intent.putExtra("geoLong", longGeo);
 
-                                                intent.putExtra("latitudeFromGoogle", newLatitude);
-                                                intent.putExtra("longitudeFromGoogle", newLongitude);
-                                                intent.putExtra("intentFrom", intentFrom);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(MainActivity.this, MyNavigationActivity.class);
 
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                                startActivity(intent);
-                                            }
+                                        Random r = new Random();
+                                        int n = 100000 + r.nextInt(900000);
+                                        String code = String.valueOf(n);
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
+                                        intentFrom = "google";
+                                        gpsTracker = new GpsTracker(MainActivity.this);
+                                        if (gpsTracker.canGetLocation()) {
+                                            latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
+                                            longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
+                                            newLatitude = String.valueOf(latitudeRefresh);
+                                            newLongitude = String.valueOf(longitudeRefresh);
+                                        } else {
+                                            gpsTracker.showSettingsAlert();
+                                        }
 
-                                            }
-                                        });
-                            } else{
-                                Intent intent = new Intent(MainActivity.this, InvitationCodeActivity.class);
+                                        FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("code").setValue(code);
+                                        FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("userLatitude").setValue(newLatitude);
+                                        FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("userLongitude").setValue(newLongitude);
+                                        FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("geofenceLat").setValue(0);
+                                        FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("geofenceLong").setValue(0);
 
-                                Random r = new Random();
-                                int n = 100000 + r.nextInt(900000);
-                                String code = String.valueOf(n);
+                                        intent.putExtra("latitudeFromGoogle", newLatitude);
+                                        intent.putExtra("longitudeFromGoogle", newLongitude);
 
-                                intentFrom = "google";
-                                gpsTracker = new GpsTracker(MainActivity.this);
-                                if (gpsTracker.canGetLocation()) {
-                                    latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
-                                    longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
-                                    newLatitude = String.valueOf(latitudeRefresh);
-                                    newLongitude = String.valueOf(longitudeRefresh);
-                                } else {
-                                    gpsTracker.showSettingsAlert();
+                                        intent.putExtra("code", code);
+                                        intent.putExtra("isSharing", "false");
+                                        intent.putExtra("intentFrom", intentFrom);
+                                        intent.putExtra("geoLat", 0);
+                                        intent.putExtra("geoLong", 0);
+
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(intent);
+                                        progressBar.setVisibility(View.GONE);
+
+                                    }
                                 }
-                                intent.putExtra("latitudeFromGoogle", newLatitude);
-                                intent.putExtra("longitudeFromGoogle", newLongitude);
 
-                                intent.putExtra("code", code);
-                                intent.putExtra("isSharing", false);
-                                intent.putExtra("intentFrom", intentFrom);
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("code").setValue(code);
-
-                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity(intent);
-                                progressBar.setVisibility(View.GONE);
-                            }
-
-                        }
-                    });
-
-
+                                }
+                            });
                 } else {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
@@ -333,3 +354,4 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 });
     }
 }
+

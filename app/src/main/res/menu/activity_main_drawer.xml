@@ -22,6 +22,11 @@
                 android:id="@+id/nav_invite"
                 android:icon="@drawable/ic_group_add"
                 android:title="@string/invite_member" />
+
+            <item
+                android:id="@+id/add_geofence"
+                android:icon="@drawable/ic_location"
+                android:title="@string/add_geofence" />
         </menu>
 
     </item>

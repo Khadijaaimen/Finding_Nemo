@@ -53,6 +53,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -73,14 +74,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView latitudes, longitudes, boldName;
     TextInputLayout mNameEditText, mEmailEditText, lastLatEditText, lastLongEditText, shareLocationEditText;
-    String lat, lng, oldLatitudeMain, oldLongitudeMain, oldLatitude, oldLongitude, latRefresh, longRefresh, tokenfromGoogle;
+    String lat, lng, oldLatitude, oldLongitude, latRefresh, longRefresh;
     ImageView addImage;
     FirebaseAuth firebaseAuth;
     Button logoutBtn, refreshButton, locBtn, updateLocButton, navigateBtn, shareLocationBtn, sendBtn;
     GpsTracker gpsTracker;
     Double latitude, longitude, latitudeRefresh, longitudeRefresh;
     FirebaseUser currentUser;
-    String time, tokenFromMain, intentFrom, newLatitude, newLongitude, id;
+    String time, newLatitude, newLongitude, id;
     Boolean isButtonClicked = false;
     FrameLayout frameLayout;
     EditText editText;
@@ -97,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
     GoogleSignInAccount acct;
     GoogleSignInClient mGoogleSignInClient;
     FirebaseDatabase database;
-    DatabaseReference reference, reference2;
+    DatabaseReference reference;
     StorageReference storageReference, fileReference;
     List<Location> userLocations;
     Location locations;
@@ -140,17 +141,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        // from main
-        oldLatitudeMain = intent.getStringExtra("latitudeFromMain");
-        oldLongitudeMain = intent.getStringExtra("longitudeFromMain");
-        tokenFromMain = intent.getStringExtra("tokenMain");
-
-        //from main google
-        oldLatitude = intent.getStringExtra("latitudeFromGoogle");
-        oldLongitude = intent.getStringExtra("longitudeFromGoogle");
-        tokenfromGoogle = intent.getStringExtra("token");
-
-        intentFrom = intent.getStringExtra("intented");
+        oldLatitude = intent.getStringExtra("latitude");
+        oldLongitude = intent.getStringExtra("longitude");
 
         Toast.makeText(ProfileActivity.this, "Please press refresh button to get the current location", Toast.LENGTH_LONG).show();
 
@@ -160,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         visibility_Flag = false;
         mRequestQueue = Volley.newRequestQueue(this);
-//        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("27273984511-ljcd4cm9ccae3e758e9fl37d57sq5me3.apps.googleusercontent.com")
@@ -242,13 +234,9 @@ public class ProfileActivity extends AppCompatActivity {
                     linearLayout.setVisibility(View.VISIBLE);
                     visibility_Flag = true;
                 }
-                if (intentFrom.equals("main")) {
-                    lastLongEditText.getEditText().setText(oldLongitudeMain);
-                    lastLatEditText.getEditText().setText(oldLatitudeMain);
-                } else {
-                    lastLongEditText.getEditText().setText(oldLongitude);
-                    lastLatEditText.getEditText().setText(oldLatitude);
-                }
+                lastLongEditText.getEditText().setText(oldLongitude);
+                lastLatEditText.getEditText().setText(oldLatitude);
+
 
             }
         });
@@ -291,8 +279,6 @@ public class ProfileActivity extends AppCompatActivity {
                     locations.setLongitude(lng);
                     oldLongitude = lng;
                     oldLatitude = lat;
-                    oldLongitudeMain = lng;
-                    oldLatitudeMain = lat;
 
                     navigateBtn.setEnabled(true);
                     Date date = new Date();
@@ -336,13 +322,8 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent2 = new Intent(ProfileActivity.this, MapsActivity2.class);
                 Bundle b = new Bundle();
-                if (intentFrom.equals("google")) {
-                    b.putDouble("lat1", Double.parseDouble(oldLatitude));
-                    b.putDouble("long1", Double.parseDouble(oldLongitude));
-                } else {
-                    b.putDouble("lat1", Double.parseDouble(oldLatitudeMain));
-                    b.putDouble("long1", Double.parseDouble(oldLongitudeMain));
-                }
+                b.putDouble("lat1", Double.parseDouble(oldLatitude));
+                b.putDouble("long1", Double.parseDouble(oldLongitude));
                 b.putDouble("lat2", latitudeRefresh);
                 b.putDouble("long2", longitudeRefresh);
 
@@ -470,11 +451,7 @@ public class ProfileActivity extends AppCompatActivity {
         String Title = editText.getText().toString();
         JSONObject json = new JSONObject();
         try {
-            if (intentFrom.equals("main")) {
-                json.put("to", tokenFromMain);
-            } else {
-                json.put("to", tokenfromGoogle);
-            }
+            json.put("to", "topic/news");
             JSONObject notificationObj = new JSONObject();
             notificationObj.put("title", Title);
             notificationObj.put("body", Message);
@@ -537,13 +514,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             userModelClass.setEmail(personEmail);
             userModelClass.setName(personName);
-            if (intentFrom.equals("google")) {
-                userModelClass.setLatitude(oldLatitude);
-                userModelClass.setLongitude(oldLongitude);
-            } else {
-                userModelClass.setLatitude(oldLatitudeMain);
-                userModelClass.setLongitude(oldLongitudeMain);
-            }
+            userModelClass.setLatitude(oldLatitude);
+            userModelClass.setLongitude(oldLongitude);
 
             mNameEditText.getEditText().setText(personName);
             mEmailEditText.getEditText().setText(personEmail);

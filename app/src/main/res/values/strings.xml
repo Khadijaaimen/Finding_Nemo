@@ -115,6 +115,7 @@
     <string name="yes">Yes</string>
     <string name="ok_continue">Ok, Continue</string>
 
-    <string name="texts">A map will be shown to you. You need to press for a few seconds on map to add geofence at your desired location.</string>
+    <string name="texts">Please press for a few seconds on map to add geofence at your desired location.</string>
+    <string name="add_geofence">Add Geofence</string>
 
 </resources>
