@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,26 +20,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.findingnemo.circleActivities.InvitationCodeActivity;
 import com.example.findingnemo.generalActivities.MainActivity;
 import com.example.findingnemo.generalActivities.ProfileActivity;
 import com.example.findingnemo.R;
 import com.example.findingnemo.circleActivities.JoinGroupActivity;
 import com.example.findingnemo.circleActivities.MyGroupActivity;
-import com.example.findingnemo.geofencing.GeoFencingMap;
 import com.example.findingnemo.geofencing.GeofenceHelper;
 import com.example.findingnemo.modelClasses.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,7 +49,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -68,16 +60,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class MyNavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
         , OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
@@ -257,26 +242,10 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-
-            FirebaseDatabase.getInstance().getReference("users").child(uid).child("information").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        Intent intent = new Intent(MyNavigationActivity.this, ProfileActivity.class);
-
-                        intent.putExtra("latitude", latCard);
-                        intent.putExtra("longitude", longCard);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(intent);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            Intent intent = new Intent(MyNavigationActivity.this, ProfileActivity.class);
+            intent.putExtra("latitude", latCard);
+            intent.putExtra("longitude", longCard);
+            startActivity(intent);
 
         } else if (id == R.id.nav_groups) {
             Intent intent = new Intent(MyNavigationActivity.this, MyGroupActivity.class);
@@ -292,7 +261,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, "My Invitation Code is: \n" + code);
-            startActivity(Intent.createChooser(i, "\b Invite members using your invite code.\b \n Share Using: "));
+            startActivity(Intent.createChooser(i, "\bUse your invite code.\b \n Share Using: "));
         } else if (id == R.id.nav_logout) {
             if (acct != null) {
                 FirebaseAuth.getInstance().signOut();

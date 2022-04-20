@@ -21,42 +21,81 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FindingNemo">
-        <activity
-            android:name=".circleActivities.MyGroupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".circleActivities.JoinGroupActivity"
-            android:exported="false" />
-        <!--
-             TODO: Before you run your application, you need a Google Maps API key.
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="true"
+            android:permission="TODO"
+            tools:ignore="ExportedService"
+            tools:node="merge">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-             To get one, follow the directions here:
+        <receiver
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="true"
+            android:permission="TODO"
+            tools:ignore="ExportedReceiver,Instantiatable" />
 
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
 
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-        -->
+        <service
+            android:name=".geofencing.GeofenceLocationService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <receiver
+            android:name=".geofencing.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="TODO"
+            tools:ignore="ExportedReceiver" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCLKgsn7Pk0yYYBdDnKJPVGcFG0GLKgHSc" />
 
         <activity
-            android:name=".googleMaps.MyNavigationActivity"
+            android:name=".geofencing.GeoFencingMap"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden" />
+            android:label="@string/title_activity_geo_fencing" />
+
         <activity
-            android:name=".circleActivities.InvitationCodeActivity"
+            android:name=".circleActivities.JoinGroupActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".circleActivities.MyGroupActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".googleMaps.MapsActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo_image" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/teal_700" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".generalActivities.MainActivity"
-            android:exported="false"
-            android:windowSoftInputMode="stateHidden" />
+            android:exported="false" />
+        <activity
+            android:name=".generalActivities.ProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".generalActivities.SplashActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateHidden">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
