@@ -88,8 +88,8 @@ JoinGroupActivity extends AppCompatActivity {
                                         if(task.isSuccessful()){
                                             Intent intent = new Intent(JoinGroupActivity.this, MyNavigationActivity.class);
                                             Toast.makeText(getApplicationContext(), "Joined Successfully!", Toast.LENGTH_SHORT).show();
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                             startActivity(intent);
+                                            JoinGroupActivity.this.finish();
                                         }
                                     }
                                 });
@@ -111,8 +111,7 @@ JoinGroupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(JoinGroupActivity.this, MyNavigationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        super.onBackPressed();
+        JoinGroupActivity.this.finish();
     }
 }

@@ -19,13 +19,15 @@
         android:id="@+id/joinText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/enter_code_to_join_group"
-        android:textSize="20sp"
         android:layout_below="@+id/icon"
-        android:layout_margin="30dp"
-        android:gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
         android:fontFamily="@font/mitr_reg"
-        />
+        android:gravity="center"
+        android:text="@string/enter_code_to_join_group"
+        android:textSize="20sp" />
 
     <com.goodiebag.pinview.Pinview
         android:id="@+id/pinView"
@@ -47,8 +49,7 @@
         android:layout_height="60dp"
         android:layout_below="@id/pinView"
         android:layout_marginTop="60dp"
-        android:text="@string/join_a_group"
-        android:textSize="18sp"
         android:fontFamily="@font/mitr_medium"
-        />
+        android:text="@string/join_a_group"
+        android:textSize="18sp" />
 </RelativeLayout>

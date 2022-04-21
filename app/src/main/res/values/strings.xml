@@ -39,7 +39,7 @@
     <string name="msg_token_fmt" />
     <string name="title">Title</string>
     <string name="description">Description</string>
-    <string name="join_a_group">Join Group</string>
+    <string name="join_a_group">Join Circle</string>
     <string name="make_a_group">Make group</string>
     <string name="group_name">Group Name</string>
     <string name="create_a_group">Create a Group</string>
@@ -105,7 +105,7 @@
 
     <string name="close">Drawer Closed</string>
     <string name="open">Drawer Opened</string>
-    <string name="enter_code_to_join_group">Enter Code to Join Group</string>
+    <string name="enter_code_to_join_group">Enter Code to Join Circle</string>
     <string name="share_location_code"><![CDATA[Share Location & Code]]></string>
     <string name="circle">Circle</string>
     <string name="my_circle">My Circle</string>

@@ -11,6 +11,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -92,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
             "key=" + "AAAABlmn-f8:APA91bFdofVriN4LhIoa_yHSFlu6OtgTZvm1HV1oUCF5gDRccmCuEJJ0vsZMgVFUpJcJYBqbUIV8lQdeEVtewMLgNbVGRoWdPiO_tgnsWQ-SYgXojXKv0qxalCkAGrGNWk2_eDvnc4F0";
     String contentType = "application/json";
     RequestQueue mRequestQueue;
+    ImageButton backButton;
 
     String personName, personEmail;
     UserModelClass userModelClass;
@@ -128,6 +130,7 @@ public class ProfileActivity extends AppCompatActivity {
         editText = findViewById(R.id.title);
         mEmailEditText = findViewById(R.id.layout2);
         linearLayout = findViewById(R.id.linearLayout);
+        backButton = findViewById(R.id.backBtn);
 
         lastLongEditText = findViewById(R.id.layout8);
         lastLatEditText = findViewById(R.id.layout9);
@@ -252,8 +255,8 @@ public class ProfileActivity extends AppCompatActivity {
                             String time = dss.child("time").getValue().toString();
                             userLocations.add(userLocations.size(), new Location(latitudeString, longitudeString, time));
                         }
-                        lastLongEditText.getEditText().setText(latitudeString);
-                        lastLatEditText.getEditText().setText(longitudeString);
+                        lastLongEditText.getEditText().setText(longitudeString);
+                        lastLatEditText.getEditText().setText(latitudeString);
                     }
                 }
             }
@@ -261,6 +264,13 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 

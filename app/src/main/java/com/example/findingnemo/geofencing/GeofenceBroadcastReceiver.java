@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.findingnemo.googleMaps.MyNavigationActivity;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
@@ -37,11 +38,11 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
 //                Toast.makeText(context, "GEOFENCE_TRANSITION_ENTER", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("Location Update", "Entered geofence", GeoFencingMap.class);
+                notificationHelper.sendHighPriorityNotification("Location Update", "Entered geofence", MyNavigationActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
 //                Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("Location Update", "Left geofence", GeoFencingMap.class);
+                notificationHelper.sendHighPriorityNotification("Location Update", "Left geofence", MyNavigationActivity.class);
                 break;
         }
     }

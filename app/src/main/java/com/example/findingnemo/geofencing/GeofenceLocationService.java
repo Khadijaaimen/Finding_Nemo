@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.example.findingnemo.googleMaps.MyNavigationActivity;
 import com.example.findingnemo.modelClasses.UpdatingLocations;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -219,9 +220,9 @@ public class GeofenceLocationService extends Service {
 
         notificationHelper = new GeofenceNotificationHelper(GeofenceLocationService.this);
         if (distance < 400) {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has entered geofence.", GeoFencingMap.class);
+            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has entered geofence.", MyNavigationActivity.class);
         } else {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has left geofence.", GeoFencingMap.class);
+            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has left geofence.", MyNavigationActivity.class);
         }
     }
 

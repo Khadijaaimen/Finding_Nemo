@@ -249,12 +249,10 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
 
         } else if (id == R.id.nav_groups) {
             Intent intent = new Intent(MyNavigationActivity.this, MyGroupActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 
         } else if (id == R.id.nav_join) {
             Intent intent3 = new Intent(MyNavigationActivity.this, JoinGroupActivity.class);
-            intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent3);
 
         } else if (id == R.id.nav_invite) {
