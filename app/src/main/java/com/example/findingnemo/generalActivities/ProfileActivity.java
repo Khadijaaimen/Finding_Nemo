@@ -207,7 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        reference.child(id).child("information").child("uri").addValueEventListener(new ValueEventListener() {
+        reference.child(id).child("uri").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -415,7 +415,7 @@ public class ProfileActivity extends AppCompatActivity {
                     fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            DatabaseReference imageStore = FirebaseDatabase.getInstance().getReference("users").child(id).child("information").child("imageURL");
+                            DatabaseReference imageStore = FirebaseDatabase.getInstance().getReference("users").child(id).child("uri");
 
                             UploadImage uploadImage = new UploadImage(uri.toString());
                             imageStore.setValue(uploadImage);
@@ -538,16 +538,6 @@ public class ProfileActivity extends AppCompatActivity {
                 longitudes.setText(newLongitude);
             }
         }
-
-//        reference2 = database.getReference("token");
-//
-//        if (intentFrom.equals("google")) {
-//            userModelClass.setToken(tokenfromGoogle);
-//        } else {
-//            userModelClass.setToken(tokenFromMain);
-//        }
-//
-//        reference.child(id).child("information").child("token").setValue(userModelClass.getToken());
     }
 }
 

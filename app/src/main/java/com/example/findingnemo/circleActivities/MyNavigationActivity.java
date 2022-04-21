@@ -1,4 +1,4 @@
-package com.example.findingnemo.googleMaps;
+package com.example.findingnemo.circleActivities;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,9 +23,8 @@ import android.widget.Toast;
 import com.example.findingnemo.generalActivities.MainActivity;
 import com.example.findingnemo.generalActivities.ProfileActivity;
 import com.example.findingnemo.R;
-import com.example.findingnemo.circleActivities.JoinGroupActivity;
-import com.example.findingnemo.circleActivities.MyGroupActivity;
 import com.example.findingnemo.geofencing.GeofenceHelper;
+import com.example.findingnemo.googleMaps.GpsTracker;
 import com.example.findingnemo.modelClasses.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -132,9 +131,16 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
 
         DatabaseReference reference = FirebaseDatabase.getInstance("https://finding-nemo-3e2fd-default-rtdb.firebaseio.com/").getReference("users");
 
-        UserModel users = new UserModel(uid, nameUser, emailUser, code, photoUri.toString(), sharing, latCard, longCard, geoLat, geoLong);
-
-        reference.child(uid).child("information").setValue(users);
+        reference.child(uid).child("code").setValue(code);
+        reference.child(uid).child("email").setValue(emailUser);
+        reference.child(uid).child("geofenceLat").setValue(geoLat);
+        reference.child(uid).child("geofenceLong").setValue(geoLong);
+        reference.child(uid).child("isSharing").setValue(sharing);
+        reference.child(uid).child("uri").setValue(photoUri.toString());
+        reference.child(uid).child("userId").setValue(uid);
+        reference.child(uid).child("userLatitude").setValue(latCard);
+        reference.child(uid).child("userLongitude").setValue(longCard);
+        reference.child(uid).child("userName").setValue(nameUser);
 
         dialog = new Dialog(MyNavigationActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -367,9 +373,9 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 handleMapLongClick(latLng);
                 FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("information").child("geofenceLat").setValue(latLng.latitude);
+                        .child("geofenceLat").setValue(latLng.latitude);
                 FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("information").child("geofenceLong").setValue(latLng.longitude);
+                        .child("geofenceLong").setValue(latLng.longitude);
 
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
@@ -378,9 +384,9 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         } else {
             handleMapLongClick(latLng);
             FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("information") .child("geofenceLat").setValue(latLng.latitude);
+                    .child("geofenceLat").setValue(latLng.latitude);
             FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("information").child("geofenceLong").setValue(latLng.longitude);
+                    .child("geofenceLong").setValue(latLng.longitude);
         }
 
     }

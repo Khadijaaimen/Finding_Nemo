@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.findingnemo.R;
 import com.example.findingnemo.googleMaps.GpsTracker;
-import com.example.findingnemo.googleMaps.MyNavigationActivity;
+import com.example.findingnemo.circleActivities.MyNavigationActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     GoogleSignInClient mGoogleSignInClient;
     FirebaseUser acct;
     AuthCredential credential;
-    String intentFrom, newLongitude, newLatitude;
+    String intentFrom;
     PermissionManager permission;
     GpsTracker gpsTracker;
     Double latitudeRefresh, longitudeRefresh;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 };
                 permission.checkAndRequestPermissions(this);
 
-                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information")
+                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("information").addValueEventListener(new ValueEventListener() {
+                            .addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
@@ -263,31 +263,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                         if (gpsTracker.canGetLocation()) {
                                             latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
                                             longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
-                                            newLatitude = String.valueOf(latitudeRefresh);
-                                            newLongitude = String.valueOf(longitudeRefresh);
                                         } else {
                                             gpsTracker.showSettingsAlert();
                                         }
 
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("information").child("code").setValue(code);
+                                                .child("code").setValue(code);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("information").child("userLatitude").setValue(newLatitude);
+                                                .child("userLatitude").setValue(latitudeRefresh);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("information").child("userLongitude").setValue(newLongitude);
+                                                .child("userLongitude").setValue(longitudeRefresh);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("information").child("geofenceLat").setValue(latitudeRefresh);
+                                                .child("geofenceLat").setValue(0);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("information").child("geofenceLong").setValue(longitudeRefresh);
+                                                .child("geofenceLong").setValue(0);
 
-                                        intent.putExtra("latitudeFromGoogle", newLatitude);
-                                        intent.putExtra("longitudeFromGoogle", newLongitude);
+                                        intent.putExtra("latitudeFromGoogle", latitudeRefresh);
+                                        intent.putExtra("longitudeFromGoogle", longitudeRefresh);
 
                                         intent.putExtra("code", code);
                                         intent.putExtra("isSharing", "false");
                                         intent.putExtra("intentFrom", intentFrom);
-                                        intent.putExtra("geoLat", latitudeRefresh);
-                                        intent.putExtra("geoLong", longitudeRefresh);
+                                        intent.putExtra("geoLat", 0);
+                                        intent.putExtra("geoLong", 0);
 
                                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         startActivity(intent);

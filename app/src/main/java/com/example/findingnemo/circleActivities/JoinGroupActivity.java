@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.findingnemo.googleMaps.MyNavigationActivity;
 import com.example.findingnemo.R;
 import com.example.findingnemo.modelClasses.UserModel;
 import com.goodiebag.pinview.Pinview;
@@ -50,12 +49,11 @@ JoinGroupActivity extends AppCompatActivity {
         current_user_id = user.getUid();
 
         reference = FirebaseDatabase.getInstance().getReference("users");
-        currentReference = reference.child(user.getUid());
 
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Query query = reference.child("information").orderByChild("code").equalTo(pinview.getValue());
+                Query query = reference.orderByChild("code").equalTo(pinview.getValue());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -76,7 +74,7 @@ JoinGroupActivity extends AppCompatActivity {
                                 join_user_id = user1.userId;
 
                                 groupReference = FirebaseDatabase.getInstance().getReference("users")
-                                        .child(join_user_id).child("memberInformation").child("GroupMembers");
+                                        .child(join_user_id).child("GroupMembers");
 
                                 GroupJoinModel groupJoin = new GroupJoinModel(current_user_id);
                                 GroupJoinModel groupJoin1 = new GroupJoinModel(join_user_id);
@@ -89,7 +87,6 @@ JoinGroupActivity extends AppCompatActivity {
                                             Intent intent = new Intent(JoinGroupActivity.this, MyNavigationActivity.class);
                                             Toast.makeText(getApplicationContext(), "Joined Successfully!", Toast.LENGTH_SHORT).show();
                                             startActivity(intent);
-                                            JoinGroupActivity.this.finish();
                                         }
                                     }
                                 });

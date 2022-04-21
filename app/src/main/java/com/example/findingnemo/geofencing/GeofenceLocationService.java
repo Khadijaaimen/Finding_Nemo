@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
@@ -22,7 +21,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.example.findingnemo.googleMaps.MyNavigationActivity;
+import com.example.findingnemo.circleActivities.MyNavigationActivity;
 import com.example.findingnemo.modelClasses.UpdatingLocations;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -56,8 +55,8 @@ public class GeofenceLocationService extends Service {
                 Toast.makeText(GeofenceLocationService.this, "Latitude: " + location.getLatitude() + '\n' +
                         "Longitude: " + location.getLongitude(), Toast.LENGTH_LONG).show();
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-                reference.child(id).child("information").child("updating_locations").child("latitude").setValue(location.getLatitude());
-                reference.child(id).child("information").child("updating_locations").child("longitude").setValue(location.getLongitude());
+                reference.child(id).child("updating_locations").child("latitude").setValue(location.getLatitude());
+                reference.child(id).child("updating_locations").child("longitude").setValue(location.getLongitude());
             }
         }
     };

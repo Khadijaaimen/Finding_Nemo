@@ -51,7 +51,7 @@
             android:permission="TODO"
             tools:ignore="ExportedReceiver" />
 
-        <activity android:name=".googleMaps.MyNavigationActivity"
+        <activity android:name=".circleActivities.MyNavigationActivity"
             android:exported="false"/>
 
         <meta-data

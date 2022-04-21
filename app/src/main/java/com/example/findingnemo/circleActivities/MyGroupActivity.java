@@ -50,7 +50,7 @@ public class MyGroupActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         userReference = FirebaseDatabase.getInstance().getReference("users");
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("memberInformation").child("GroupMembers");
+        reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("GroupMembers");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -60,7 +60,7 @@ public class MyGroupActivity extends AppCompatActivity {
                 if(snapshot.exists()){
                     for(DataSnapshot ds: snapshot.getChildren()){
                         groupMemberId = ds.child("groupMemberId").getValue(String.class);
-                        userReference.child(groupMemberId).child("information").addValueEventListener(new ValueEventListener() {
+                        userReference.child(groupMemberId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 userModel = snapshot.getValue(UserModel.class);
