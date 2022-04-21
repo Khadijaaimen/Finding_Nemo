@@ -265,7 +265,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, "My Invitation Code is: \n" + code);
-            startActivity(Intent.createChooser(i, "\bUse your invite code.\b \n Share Using: "));
+            startActivity(Intent.createChooser(i, "\bUse your invite code.\b Share Using: "));
         } else if (id == R.id.nav_logout) {
             if (acct != null) {
                 FirebaseAuth.getInstance().signOut();

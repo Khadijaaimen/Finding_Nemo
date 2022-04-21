@@ -1,22 +1,23 @@
-package com.example.findingnemo.modelClasses;
+package com.example.findingnemo.circleActivities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.findingnemo.R;
+import com.example.findingnemo.modelClasses.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersHolderView> {
 
@@ -39,8 +40,8 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
     @Override
     public void onBindViewHolder(@NonNull MembersHolderView holder, int position) {
         UserModel userObject = nameList.get(position);
-        holder.name_txt.setText(userObject.userName);
-        Picasso.get().load(userObject.uri).placeholder(R.drawable.user_icon).into(holder.circleImageView);
+        holder.name_txt.setText(userObject.getUserName());
+        Picasso.get().load(userObject.getUri()).placeholder(R.drawable.user_icon).into(holder.circleImageView);
     }
 
     @Override
@@ -51,8 +52,8 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
     public static class MembersHolderView extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView name_txt;
-        CircleImageView circleImageView;
-        View v;
+        ImageButton deleteButton;
+        ImageView circleImageView;
         Context c;
         ArrayList<UserModel> nameArrayList;
         FirebaseAuth auth;
@@ -70,7 +71,14 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
 
             name_txt = itemView.findViewById(R.id.member_title);
             circleImageView = itemView.findViewById(R.id.user_icon);
+            deleteButton = itemView.findViewById(R.id.deleteBtn);
 
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
 
         @Override

@@ -41,7 +41,6 @@
     <string name="description">Description</string>
     <string name="join_a_group">Join Circle</string>
     <string name="make_a_group">Make group</string>
-    <string name="group_name">Group Name</string>
     <string name="create_a_group">Create a Group</string>
     <string name="add_email">Add Email</string>
     <string name="add_members">Add Members</string>
@@ -117,5 +116,7 @@
 
     <string name="texts">Please press for a few seconds on map to add geofence at your desired location.</string>
     <string name="add_geofence">Add Geofence</string>
+    <string name="group_name">Circle Name</string>
+    <string name="have_a_good_time">Track your loved ones.</string>
 
 </resources>
