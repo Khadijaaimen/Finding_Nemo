@@ -134,7 +134,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
 
         UserModel users = new UserModel(uid, nameUser, emailUser, code, photoUri.toString(), sharing, latCard, longCard, geoLat, geoLong);
 
-        reference.child(uid).setValue(users);
+        reference.child(uid).child("information").setValue(users);
 
         dialog = new Dialog(MyNavigationActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -369,9 +369,9 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 handleMapLongClick(latLng);
                 FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("geofenceLat").setValue(latLng.latitude);
+                        .child("information").child("geofenceLat").setValue(latLng.latitude);
                 FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("geofenceLong").setValue(latLng.longitude);
+                        .child("information").child("geofenceLong").setValue(latLng.longitude);
 
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
@@ -380,9 +380,9 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         } else {
             handleMapLongClick(latLng);
             FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("geofenceLat").setValue(latLng.latitude);
+                    .child("information") .child("geofenceLat").setValue(latLng.latitude);
             FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("geofenceLong").setValue(latLng.longitude);
+                    .child("information").child("geofenceLong").setValue(latLng.longitude);
         }
 
     }

@@ -50,7 +50,7 @@ public class GeofenceNotificationHelper extends ContextWrapper {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Location Update")
 //                .setContentText(body)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.logo_image)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setStyle(new NotificationCompat.BigTextStyle().setSummaryText("Location Tracker").setBigContentTitle(title).bigText(body))
                 .setContentIntent(pendingIntent)

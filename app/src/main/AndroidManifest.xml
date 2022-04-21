@@ -51,6 +51,9 @@
             android:permission="TODO"
             tools:ignore="ExportedReceiver" />
 
+        <activity android:name=".googleMaps.MyNavigationActivity"
+            android:exported="false"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCLKgsn7Pk0yYYBdDnKJPVGcFG0GLKgHSc" />

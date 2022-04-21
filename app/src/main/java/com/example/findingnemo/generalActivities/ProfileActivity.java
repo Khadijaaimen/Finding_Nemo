@@ -97,7 +97,6 @@ public class ProfileActivity extends AppCompatActivity {
     UserModelClass userModelClass;
     GoogleSignInAccount acct;
     GoogleSignInClient mGoogleSignInClient;
-    FirebaseDatabase database;
     DatabaseReference reference;
     StorageReference storageReference, fileReference;
     List<Location> userLocations;
@@ -141,8 +140,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        oldLatitude = intent.getStringExtra("latitude");
-        oldLongitude = intent.getStringExtra("longitude");
+        Double latDouble = intent.getDoubleExtra("latitude", 0.0);
+        Double longDouble = intent.getDoubleExtra("longitude", 0.0);
+
+        oldLatitude = String.valueOf(latDouble);
+        oldLongitude = String.valueOf(longDouble);
 
         Toast.makeText(ProfileActivity.this, "Please press refresh button to get the current location", Toast.LENGTH_LONG).show();
 
@@ -163,8 +165,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
-        database = FirebaseDatabase.getInstance("https://location-tracker-2be22-default-rtdb.firebaseio.com/");
-        reference = database.getReference("users");
+        reference = FirebaseDatabase.getInstance().getReference("users");
         storageReference = FirebaseStorage.getInstance().getReference("userUploads");
 
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -203,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        reference.child(id).child("uri").addValueEventListener(new ValueEventListener() {
+        reference.child(id).child("information").child("uri").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -234,10 +235,6 @@ public class ProfileActivity extends AppCompatActivity {
                     linearLayout.setVisibility(View.VISIBLE);
                     visibility_Flag = true;
                 }
-                lastLongEditText.getEditText().setText(oldLongitude);
-                lastLatEditText.getEditText().setText(oldLatitude);
-
-
             }
         });
 
@@ -246,14 +243,17 @@ public class ProfileActivity extends AppCompatActivity {
         reference.child(id).child("locations").child("0").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String latitudeString = null, longitudeString = null;
                 if (snapshot.exists()) {
                     if (userLocations.size() < 4) {
                         for (DataSnapshot dss : snapshot.getChildren()) {
-                            String latitude = dss.child("latitude").getValue().toString();
-                            String longitude = dss.child("longitude").getValue().toString();
+                            latitudeString = dss.child("latitude").getValue().toString();
+                            longitudeString = dss.child("longitude").getValue().toString();
                             String time = dss.child("time").getValue().toString();
-                            userLocations.add(userLocations.size(), new Location(latitude, longitude, time));
+                            userLocations.add(userLocations.size(), new Location(latitudeString, longitudeString, time));
                         }
+                        lastLongEditText.getEditText().setText(latitudeString);
+                        lastLatEditText.getEditText().setText(longitudeString);
                     }
                 }
             }
@@ -295,7 +295,7 @@ public class ProfileActivity extends AppCompatActivity {
                 } else {
                     gpsTracker.showSettingsAlert();
                 }
-                showAllUserData();
+//                showAllUserData();
             }
         });
 

@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 };
                 permission.checkAndRequestPermissions(this);
 
-                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information")
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .addValueEventListener(new ValueEventListener() {
+                            .child("information").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
@@ -270,15 +270,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                         }
 
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("code").setValue(code);
+                                                .child("information").child("code").setValue(code);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("userLatitude").setValue(newLatitude);
+                                                .child("information").child("userLatitude").setValue(newLatitude);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("userLongitude").setValue(newLongitude);
+                                                .child("information").child("userLongitude").setValue(newLongitude);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("geofenceLat").setValue(0);
+                                                .child("information").child("geofenceLat").setValue(latitudeRefresh);
                                         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child("geofenceLong").setValue(0);
+                                                .child("information").child("geofenceLong").setValue(longitudeRefresh);
 
                                         intent.putExtra("latitudeFromGoogle", newLatitude);
                                         intent.putExtra("longitudeFromGoogle", newLongitude);
@@ -286,8 +286,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                         intent.putExtra("code", code);
                                         intent.putExtra("isSharing", "false");
                                         intent.putExtra("intentFrom", intentFrom);
-                                        intent.putExtra("geoLat", 0);
-                                        intent.putExtra("geoLong", 0);
+                                        intent.putExtra("geoLat", latitudeRefresh);
+                                        intent.putExtra("geoLong", longitudeRefresh);
 
                                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         startActivity(intent);

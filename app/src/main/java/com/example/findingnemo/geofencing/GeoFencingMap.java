@@ -152,8 +152,8 @@ public class GeoFencingMap extends FragmentActivity implements OnMapReadyCallbac
             //We need background permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 handleMapLongClick(latLng);
-                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("geofence").child("latitude").setValue(latLng.latitude);
-                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("geofence").child("longitude").setValue(latLng.longitude);
+                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information").child("geofenceLat").setValue(latLng.latitude);
+                FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information").child("geofenceLong").setValue(latLng.longitude);
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                     //We show a dialog and ask for permission
@@ -165,8 +165,8 @@ public class GeoFencingMap extends FragmentActivity implements OnMapReadyCallbac
 
         } else {
             handleMapLongClick(latLng);
-            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("geofence").child("latitude").setValue(latLng.latitude);
-            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("geofence").child("longitude").setValue(latLng.longitude);
+            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information").child("geofenceLat").setValue(latLng.latitude);
+            FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("information").child("geofenceLong").setValue(latLng.longitude);
         }
 
     }
