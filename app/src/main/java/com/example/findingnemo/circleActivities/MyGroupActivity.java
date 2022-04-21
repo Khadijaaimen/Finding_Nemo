@@ -83,6 +83,7 @@ public class MyGroupActivity extends AppCompatActivity {
         addMember = findViewById(R.id.addMemberImage);
         check = findViewById(R.id.checkBtn);
 
+        progressBar.setVisibility(View.VISIBLE);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
@@ -109,13 +110,12 @@ public class MyGroupActivity extends AppCompatActivity {
 
                 if(snapshot.child("groupIcon").exists()) {
                     String uri = snapshot.child("groupIcon").getValue(String.class);
-//                    groupIcon.setImageURI(Uri.parse(uri));
                     Picasso.get().load(uri).into(groupIcon);
                 } else {
                     groupIcon.setPadding(20, 20, 20, 20);
-//                    groupIcon.setImageResource(R.drawable.groups);
                     Picasso.get().load(R.drawable.groups).into(groupIcon);
                 }
+                progressBar.setVisibility(View.GONE);
 
                 if(snapshot.child("groupName").exists()){
                     String getName = snapshot.child("groupName").getValue(String.class);
