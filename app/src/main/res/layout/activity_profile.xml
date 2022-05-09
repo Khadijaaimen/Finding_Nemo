@@ -49,18 +49,18 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true">
 
-                <ImageView
-                    android:id="@+id/cameraIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignEnd="@id/memberNameOutline"
-                    android:layout_alignBottom="@+id/memberNameOutline"
-                    android:background="@drawable/camera_icon_bg"
-                    android:contentDescription="@string/app_name"
-                    android:elevation="3dp"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_camera"
-                    app:tint="@color/teal_700" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/cameraIcon"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignEnd="@id/memberNameOutline"-->
+<!--                    android:layout_alignBottom="@+id/memberNameOutline"-->
+<!--                    android:background="@drawable/camera_icon_bg"-->
+<!--                    android:contentDescription="@string/app_name"-->
+<!--                    android:elevation="3dp"-->
+<!--                    android:padding="5dp"-->
+<!--                    android:src="@drawable/ic_camera"-->
+<!--                    app:tint="@color/teal_700" />-->
 
                 <ProgressBar
                     android:id="@+id/progressBarIcon"

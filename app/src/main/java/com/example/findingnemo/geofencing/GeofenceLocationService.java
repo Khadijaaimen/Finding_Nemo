@@ -94,7 +94,7 @@ public class GeofenceLocationService extends Service {
                                 lat = ds.child("updated_latitude").getValue(Double.class);
                                 lng = ds.child("updated_longitude").getValue(Double.class);
                                 name = ds.child("userName").getValue(String.class);
-                                meterDistanceBetweenPoints(geoLat, geoLng, lat, lng);
+//                                meterDistanceBetweenPoints(geoLat, geoLng, lat, lng);
                             }
                         }
 

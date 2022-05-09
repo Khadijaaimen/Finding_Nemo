@@ -103,35 +103,35 @@ public class GpsTracker extends Service implements LocationListener {
         return location;
     }
 
-    public void stopUsingGPS(){
-        if(locationManager != null){
+    public void stopUsingGPS() {
+        if (locationManager != null) {
             locationManager.removeUpdates(GpsTracker.this);
         }
     }
 
-    public double getLatitudeFromNetwork(){
-        if(location != null){
+    public double getLatitudeFromNetwork() {
+        if (location != null) {
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
-    public double getLongitudeFromNetwork(){
-        if(location != null){
+    public double getLongitudeFromNetwork() {
+        if (location != null) {
             longitude = location.getLongitude();
         }
         return longitude;
     }
 
-    public double getLatitudeFromGPS(){
-        if(location != null){
+    public double getLatitudeFromGPS() {
+        if (location != null) {
             latitude2 = location.getLatitude();
         }
         return latitude2;
     }
 
-    public double getLongitudeFromGPS(){
-        if(location != null){
+    public double getLongitudeFromGPS() {
+        if (location != null) {
             longitude2 = location.getLongitude();
         }
         return longitude2;
@@ -142,30 +142,47 @@ public class GpsTracker extends Service implements LocationListener {
     }
 
 
-    public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-        // Setting Dialog Title
-        alertDialog.setTitle("GPS disabled");
-
-        // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-
-        // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
-        });
-
-        // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alertDialog.show();
+    public void showSettingsAlert() {
+        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle("GPS disabled")
+                    .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mContext.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .show();
+        }
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+//
+//        // Setting Dialog Title
+//        alertDialog.setTitle("GPS disabled");
+//
+//        // Setting Dialog Message
+//        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+//
+//        // On pressing Settings button
+//        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                mContext.startActivity(intent);
+//            }
+//        });
+//
+//        // on pressing cancel button
+//        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        alertDialog.show();
     }
 
     @Override

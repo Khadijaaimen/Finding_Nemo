@@ -132,6 +132,7 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
         googleMap.addMarker(new MarkerOptions()
                 .position(dest)
+                .title("Origin")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
         googleMap.addMarker(new MarkerOptions()

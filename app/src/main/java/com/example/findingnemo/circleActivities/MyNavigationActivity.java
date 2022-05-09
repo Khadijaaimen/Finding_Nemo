@@ -319,6 +319,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
         } else {
             gpsTracker.showSettingsAlert();
+            return;
         }
 
         LatLng currentLocation = new LatLng(latitudeRefresh, longitudeRefresh);

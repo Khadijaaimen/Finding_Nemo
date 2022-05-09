@@ -135,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity {
         lastLongEditText = findViewById(R.id.layout8);
         lastLatEditText = findViewById(R.id.layout9);
         shareLocationEditText = findViewById(R.id.layout11);
-        relativeLayout = findViewById(R.id.anotherRelativeLayout);
+//        relativeLayout = findViewById(R.id.anotherRelativeLayout);
         progressBar = findViewById(R.id.progressBarIcon);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -385,12 +385,12 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileChooser();
-            }
-        });
+//        relativeLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openFileChooser();
+//            }
+//        });
     }
 
     private void openFileChooser() {

@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please connect to your internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
         }
 
     }
