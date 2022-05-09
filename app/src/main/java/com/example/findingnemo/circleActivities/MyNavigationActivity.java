@@ -238,7 +238,6 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
 
             AlertDialog alert11 = builder1.create();
             alert11.show();
-            super.onBackPressed();
         }
     }
 

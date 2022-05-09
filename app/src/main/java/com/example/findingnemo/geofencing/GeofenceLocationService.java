@@ -43,35 +43,80 @@ import java.util.List;
 public class GeofenceLocationService extends Service {
 
     private FusedLocationProviderClient fusedLocationClient;
+    List<Location> locationList;
+    Location location;
+    String id;
+    Double lat, lng, geoLat, geoLng;
+
+    GeofenceNotificationHelper notificationHelper;
+    String name;
+    List<Double> distanceList = new ArrayList<>();
+    ArrayList<String> userIds = new ArrayList<>();
 
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
             super.onLocationResult(locationResult);
 
-            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            List<Location> locationList = locationResult.getLocations();
+            id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            locationList = locationResult.getLocations();
             if (locationList.size() > 0) {
-                Location location = Iterables.getLast(locationList);
+                location = Iterables.getLast(locationList);
                 Toast.makeText(GeofenceLocationService.this, "Latitude: " + location.getLatitude() + '\n' +
                         "Longitude: " + location.getLongitude(), Toast.LENGTH_LONG).show();
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
                 reference.child(id).child("updated_latitude").setValue(location.getLatitude());
                 reference.child(id).child("updated_longitude").setValue(location.getLongitude());
+
+                FirebaseDatabase.getInstance().getReference("users").child(id)
+                        .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            geoLat = snapshot.child("geofenceLat").getValue(Double.class);
+                            geoLng = snapshot.child("geofenceLong").getValue(Double.class);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+                FirebaseDatabase.getInstance().getReference("users").child(id).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if(snapshot.child("GroupMembers").exists()){
+                            for (DataSnapshot ds: snapshot.child("GroupMembers").getChildren()) {
+                                lat = ds.child("updated_latitude").getValue(Double.class);
+                                lng = ds.child("updated_longitude").getValue(Double.class);
+                                name = ds.child("userName").getValue(String.class);
+                                meterDistanceBetweenPoints(geoLat, geoLng, lat, lng);
+                            }
+                        }
+
+                        if(snapshot.child("joinedGroupId").exists()){
+                            for (DataSnapshot ds : snapshot.child("joinedGroupId").getChildren()) {
+                                String uid = ds.child("adminId").getValue(String.class);
+                                FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_latitude").setValue(location.getLatitude());
+                                FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_longitude").setValue(location.getLongitude());
+                            }
+                        }
+//
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
             }
         }
     };
-
-    GeofenceNotificationHelper notificationHelper;
-    String name;
-    List<Double> distanceList = new ArrayList<>();
-    ArrayList<UpdatingLocations> geofence = new ArrayList<>();
-    ArrayList<UpdatingLocations> data = new ArrayList<>();
-    ArrayList<String> emails = new ArrayList<>();
-    ArrayList<Integer> memberCounts = new ArrayList<>();
-    Integer i, j, k, a, z;
-    Integer noOfMembers;
-    Boolean isChecked = false;
 
     @Override
     public void onCreate() {
@@ -121,84 +166,7 @@ public class GeofenceLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
-//        Bundle args = intent.getBundleExtra("geo");
-//        geofence = (ArrayList<UpdatingLocations>) args.getSerializable("geofenceData");
-//
-//        Integer groupCount = intent.getIntExtra("groupCount", 0);
-//
-        Bundle args2 = intent.getBundleExtra("dataUser");
-        data = (ArrayList<UpdatingLocations>) args2.getSerializable("userData");
-//
-//        FirebaseDatabase.getInstance().getReference("groups").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists())
-//                    FirebaseDatabase.getInstance().getReference("groups").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups")
-//                            .addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                    for (i = 0; i < groupCount; i++) {
-//                                        if (geofence.get(i).getGroupNo().equals(i)) {
-//                                            noOfMembers = snapshot.child("Group " + i).child("no_of_members").getValue(Integer.class);
-//                                            memberCounts.add(0, noOfMembers);
-//                                        }
-//                                    }
-//                                    checkEmailExists();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                }
-//                            });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
         return START_STICKY;
-    }
-
-    private void checkEmailExists() {
-        isChecked = true;
-        if (noOfMembers > 0)
-            FirebaseDatabase.getInstance().getReference("groups").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups")
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                for (z = 0; z < memberCounts.size(); z++) {
-                                    for (a = 0; a < memberCounts.get(z); a++) {
-                                        String memberEmail = snapshot.child("Group " + z).child("Member " + a).child("email").getValue(String.class);
-                                        emails.add(memberEmail);
-                                    }
-                                }
-                            }
-
-                            for (j = 0; j < data.size(); j++) {
-                                for (k = 0; k < emails.size(); k++) {
-                                    if (distanceList.size() < emails.size()) {
-                                        if (data.get(j).getUserEmail().equals(emails.get(k))) {
-                                            Double latitude = data.get(j).getUserLat();
-                                            Double longitude = data.get(j).getUserLng();
-                                            name = data.get(j).getUserName();
-                                            meterDistanceBetweenPoints(geofence.get(j).getUserLat(), geofence.get(j).getUserLng(), latitude, longitude);
-                                            isChecked = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
     }
 
     private void meterDistanceBetweenPoints(Double lat_a, Double lng_a, Double lat_b, Double lng_b) {
@@ -220,9 +188,9 @@ public class GeofenceLocationService extends Service {
 
         notificationHelper = new GeofenceNotificationHelper(GeofenceLocationService.this);
         if (distance < 400) {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has entered geofence.", MyNavigationActivity.class);
+            notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has entered geofence.", MyNavigationActivity.class);
         } else {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", data.get(j).getUserName() + " has left geofence.", MyNavigationActivity.class);
+            notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has left geofence.", MyNavigationActivity.class);
         }
     }
 

@@ -65,7 +65,7 @@
         <b>Allow all the time</b> permission
     </string>
     <string name="add_tracking_location">Add Tracking location</string>
-    <string name="current_tracking_location">Current Tracking Location</string>
+    <string name="current_tracking_location">Current Geofence</string>
     <string name="login">Login</string>
     <string name="hello_there_welcome">Hello There, Welcome!</string>
     <string name="password">Password</string>

@@ -6,6 +6,7 @@
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/drawable-v24/background.xml" value="0.147" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/drawable/background.xml" value="0.147" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/drawable/circle_red.xml" value="0.135" />
+        <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/drawable/gradient_bg.xml" value="0.1" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout-v26/activity_join_group.xml" value="0.17864583333333334" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/activity_invitation_code.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/activity_invititation_code.xml" value="0.17864583333333334" />
@@ -31,7 +32,7 @@
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/fragment_gallery.xml" value="0.17864583333333334" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/fragment_home.xml" value="0.17864583333333334" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/fragment_slideshow.xml" value="0.17864583333333334" />
-        <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/nav_header_my_navigation.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/layout/nav_header_my_navigation.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/menu/activity_main_drawer.xml" value="0.22" />
         <entry key="..\:/Users/EliteBook/AndroidStudioProjects/FindingNemo/app/src/main/res/menu/my_navigation.xml" value="0.17864583333333334" />
       </map>

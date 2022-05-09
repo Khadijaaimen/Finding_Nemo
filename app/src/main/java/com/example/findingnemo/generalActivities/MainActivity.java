@@ -26,11 +26,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.findingnemo.R;
+import com.example.findingnemo.circleActivities.MembersAdapter;
 import com.example.findingnemo.circleActivities.Util;
 import com.example.findingnemo.geofencing.GeofenceLocationService;
 import com.example.findingnemo.googleMaps.GpsTracker;
 import com.example.findingnemo.circleActivities.MyNavigationActivity;
 import com.example.findingnemo.modelClasses.UpdatingLocations;
+import com.example.findingnemo.modelClasses.UserModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -68,9 +70,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     GpsTracker gpsTracker;
     Double latitudeRefresh, longitudeRefresh;
 
-    ArrayList<UpdatingLocations> locationsArrayList = new ArrayList<>();
-    UpdatingLocations locations;
-
     GeofenceLocationService mLocationService;
     Intent mServiceIntent;
     private static final int MY_FINE_LOCATION_REQUEST = 99;
@@ -78,9 +77,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
-    private int requestCode;
-    private String[] permissions;
-    private int[] grantResults;
 
     @Override
     public void onStart() {
@@ -90,57 +86,57 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         acct = FirebaseAuth.getInstance().getCurrentUser();
         if (isNetwork(getApplicationContext())) {
             if (acct != null) {
-                if (locationsArrayList.size() > 0) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
 
-                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                                alertDialog.setTitle("Background permission");
-                                alertDialog.setMessage(R.string.background_location_permission_message);
-                                alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        starServiceFunc();
-                                    }
-                                });
-                                alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        requestBackgroundLocationPermission();
-                                    }
-                                });
-                                alertDialog.create().show();
+                        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
 
-                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED) {
-                                starServiceFunc();
-                            }
-                        } else {
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                            alertDialog.setTitle("Background permission");
+                            alertDialog.setMessage(R.string.background_location_permission_message);
+                            alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    starServiceFunc();
+                                }
+                            });
+                            alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestBackgroundLocationPermission();
+                                }
+                            });
+                            alertDialog.create().show();
+
+                        } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
                             starServiceFunc();
                         }
+                    } else {
+                        starServiceFunc();
+                    }
 
-                    } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("ACCESS_FINE_LOCATION")
-                                    .setMessage("Location permission required")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            requestFineLocationPermission();
-                                        }
-                                    }).create().show();
-                        } else {
-                            requestFineLocationPermission();
-                        }
+                } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("ACCESS_FINE_LOCATION")
+                                .setMessage("Location permission required")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        requestFineLocationPermission();
+                                    }
+                                }).create().show();
+                    } else {
+                        requestFineLocationPermission();
                     }
                 }
+
                 permission = new PermissionManager() {
                 };
                 permission.checkAndRequestPermissions(this);
@@ -243,78 +239,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             }
         });
-
-        FirebaseDatabase.getInstance().getReference("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String uEmail = ds.child("information").child("email").getValue(String.class);
-                        String uName = ds.child("information").child("name").getValue(String.class);
-                        Double lat = ds.child("information").child("updating_locations").child("latitude").getValue(Double.class);
-                        Double lng = ds.child("information").child("updating_locations").child("longitude").getValue(Double.class);
-                        locations = new UpdatingLocations(lat, lng, uEmail, uName);
-                        locationsArrayList.add(locations);
-                    }
-                    if (locationsArrayList.size() > 0) {
-                        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                        != PackageManager.PERMISSION_GRANTED) {
-
-                                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                                    alertDialog.setTitle("Background permission");
-                                    alertDialog.setMessage(R.string.background_location_permission_message);
-                                    alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            starServiceFunc();
-                                        }
-                                    });
-                                    alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            requestBackgroundLocationPermission();
-                                        }
-                                    });
-                                    alertDialog.create().show();
-
-                                } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                        == PackageManager.PERMISSION_GRANTED) {
-                                    starServiceFunc();
-                                }
-                            } else {
-                                starServiceFunc();
-                            }
-
-                        } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                new AlertDialog.Builder(MainActivity.this)
-                                        .setTitle("ACCESS_FINE_LOCATION")
-                                        .setMessage("Location permission required")
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                requestFineLocationPermission();
-                                            }
-                                        }).create().show();
-                            } else {
-                                requestFineLocationPermission();
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     public void signIn() {
@@ -360,6 +284,55 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                                alertDialog.setTitle("Background permission");
+                                alertDialog.setMessage(R.string.background_location_permission_message);
+                                alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        starServiceFunc();
+                                    }
+                                });
+                                alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        requestBackgroundLocationPermission();
+                                    }
+                                });
+                                alertDialog.create().show();
+
+                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                                    == PackageManager.PERMISSION_GRANTED) {
+                                starServiceFunc();
+                            }
+                        } else {
+                            starServiceFunc();
+                        }
+
+                    } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("ACCESS_FINE_LOCATION")
+                                    .setMessage("Location permission required")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            requestFineLocationPermission();
+                                        }
+                                    }).create().show();
+                        } else {
+                            requestFineLocationPermission();
+                        }
+                    }
                     FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -422,13 +395,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         startActivity(intent);
                                         progressBar.setVisibility(View.GONE);
-
                                     }
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
                                 }
                             });
                 } else {
@@ -443,13 +414,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mLocationService = new GeofenceLocationService();
         mServiceIntent = new Intent(this, GeofenceLocationService.class);
         if (!Util.isMyServiceRunning(GeofenceLocationService.class, this)) {
-//            mServiceIntent.putExtra("groupCount", groupCount);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("geofenceData", geofenceArrayList);
-//            mServiceIntent.putExtra("geo", bundle);
-            Bundle b2 = new Bundle();
-            b2.putSerializable("userData", locationsArrayList);
-            mServiceIntent.putExtra("dataUser", b2);
             startService(mServiceIntent);
         } else {
             Toast.makeText(this, "Service already running", Toast.LENGTH_SHORT).show();

@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.findingnemo">
 
+    <permission android:name="android.permission.INTERNET" />
+    <permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,6 +21,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:windowSoftInputMode="stateHidden"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -52,6 +57,7 @@
             tools:ignore="ExportedReceiver" />
 
         <activity android:name=".circleActivities.MyNavigationActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false"/>
 
         <meta-data
@@ -64,10 +70,12 @@
 
         <activity
             android:name=".circleActivities.MyGroupActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
 
         <activity
             android:name=".googleMaps.MapsActivity2"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false"
             android:label="@string/title_activity_maps" />
 
@@ -87,12 +95,15 @@
 
         <activity
             android:name=".generalActivities.MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
         <activity
             android:name=".generalActivities.ProfileActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
         <activity
             android:name=".generalActivities.SplashActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

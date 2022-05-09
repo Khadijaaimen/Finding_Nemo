@@ -58,9 +58,11 @@ public class MyGroupActivity extends AppCompatActivity {
     CardView cardView;
     StorageReference storageReference, fileReference;
     Uri imageUri;
+    Boolean isChecked = false;
     RelativeLayout relativeLayout;
     ImageView home, groupIcon, addMember, check;
     String code;
+    ArrayList<String> idArrayList = new ArrayList<>();
 
     public static final int PICK_IMAGE_REQUEST = 1;
 
@@ -96,38 +98,41 @@ public class MyGroupActivity extends AppCompatActivity {
 
         userReference = FirebaseDatabase.getInstance().getReference("users");
 
-        userReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Double geolat = snapshot.child("geofenceLat").getValue(Double.class);
-                assert geolat != null;
-                String lat = geolat.toString();
-                latitudeEdit.getEditText().setText(lat);
-                Double geolong = snapshot.child("geofenceLong").getValue(Double.class);
-                String lng= geolong.toString();
-                longitudeEdit.getEditText().setText(lng);
-                code = snapshot.child("code").getValue(String.class);
+        if (!isChecked)
+            userReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!isChecked) {
+                        Double geolat = snapshot.child("geofenceLat").getValue(Double.class);
+                        assert geolat != null;
+                        String lat = geolat.toString();
+                        latitudeEdit.getEditText().setText(lat);
+                        Double geolong = snapshot.child("geofenceLong").getValue(Double.class);
+                        String lng = geolong.toString();
+                        longitudeEdit.getEditText().setText(lng);
+                        code = snapshot.child("code").getValue(String.class);
 
-                if(snapshot.child("groupIcon").exists()) {
-                    String uri = snapshot.child("groupIcon").getValue(String.class);
-                    Picasso.get().load(uri).into(groupIcon);
-                } else {
-                    groupIcon.setPadding(20, 20, 20, 20);
-                    Picasso.get().load(R.drawable.groups).into(groupIcon);
+                        if (snapshot.child("groupIcon").exists()) {
+                            String uri = snapshot.child("groupIcon").getValue(String.class);
+                            Picasso.get().load(uri).into(groupIcon);
+                        } else {
+                            groupIcon.setPadding(20, 20, 20, 20);
+                            Picasso.get().load(R.drawable.groups).into(groupIcon);
+                        }
+                        progressBar.setVisibility(View.GONE);
+
+                        if (snapshot.child("groupName").exists()) {
+                            String getName = snapshot.child("groupName").getValue(String.class);
+                            circleName.setText(getName);
+                        }
+                    }
                 }
-                progressBar.setVisibility(View.GONE);
 
-                if(snapshot.child("groupName").exists()){
-                    String getName = snapshot.child("groupName").getValue(String.class);
-                    circleName.setText(getName);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+            });
 
         addMember.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +181,7 @@ public class MyGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name = String.valueOf(circleName.getText());
-                if(name.isEmpty()){
+                if (name.isEmpty()) {
                     circleName.setError("Name is required");
                 } else {
                     circleName.setError("");
@@ -191,47 +196,8 @@ public class MyGroupActivity extends AppCompatActivity {
 
         reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("GroupMembers");
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                nameList.clear();
-                if(snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        groupMemberId = ds.child("groupMemberId").getValue(String.class);
-                        userReference.child(groupMemberId).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String name = snapshot.child("userName").getValue(String.class);
-                                String email = snapshot.child("email").getValue(String.class);
-                                String code = snapshot.child("code").getValue(String.class);
-                                String isSharing = snapshot.child("isSharing").getValue(String.class);
-                                Double lat = snapshot.child("userLatitude").getValue(Double.class);
-                                Double lng = snapshot.child("userLongitude").getValue(Double.class);
-                                String uri = snapshot.child("uri").getValue(String.class);
-                                String userId = snapshot.child("userId").getValue(String.class);
-                                Double geoLat = snapshot.child("geofenceLat").getValue(Double.class);
-                                Double geoLong = snapshot.child("geofenceLong").getValue(Double.class);
-                                userModel = new UserModel(userId, name, email, code, uri, isSharing, lat, lng, geoLat, geoLong);
-                                nameList.add(userModel);
-                                adapter = new MembersAdapter(nameList, getApplicationContext());
-                                recyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        if (!isChecked)
+            gettingMemberInfo();
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,6 +210,62 @@ public class MyGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+            }
+        });
+    }
+
+    private void gettingMemberInfo() {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!isChecked) {
+                    nameList.clear();
+                    if (snapshot.exists()) {
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            groupMemberId = ds.getKey();
+                            idArrayList.add(groupMemberId);
+                        }
+                        showMemberInfo();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showMemberInfo() {
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!isChecked) {
+                    for (int i = 0; i < idArrayList.size(); i++) {
+                        String name = snapshot.child(idArrayList.get(i)).child("userName").getValue(String.class);
+                        String email = snapshot.child(idArrayList.get(i)).child("email").getValue(String.class);
+                        String code = snapshot.child(idArrayList.get(i)).child("code").getValue(String.class);
+                        String isSharing = snapshot.child(idArrayList.get(i)).child("isSharing").getValue(String.class);
+                        Double lat = snapshot.child(idArrayList.get(i)).child("userLatitude").getValue(Double.class);
+                        Double lng = snapshot.child(idArrayList.get(i)).child("userLongitude").getValue(Double.class);
+                        String uri = snapshot.child(idArrayList.get(i)).child("uri").getValue(String.class);
+                        String userId = snapshot.child(idArrayList.get(i)).child("userId").getValue(String.class);
+                        Double geoLat = snapshot.child(idArrayList.get(i)).child("geofenceLat").getValue(Double.class);
+                        Double geoLong = snapshot.child(idArrayList.get(i)).child("geofenceLong").getValue(Double.class);
+                        userModel = new UserModel(userId, name, email, code, uri, isSharing, lat, lng, geoLat, geoLong);
+                        nameList.add(userModel);
+                    }
+                    adapter = new MembersAdapter(nameList, getApplicationContext());
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    isChecked = true;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

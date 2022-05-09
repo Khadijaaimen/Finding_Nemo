@@ -29,9 +29,10 @@ JoinGroupActivity extends AppCompatActivity {
 
     Pinview pinview;
     Button join;
-    DatabaseReference reference, currentReference, groupReference;
+    DatabaseReference reference, groupReference;
     FirebaseUser user;
-    String join_user_id, current_user_id;
+    String join_user_id, current_user_id, name, email;
+    Double updateLat, updateLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,24 @@ JoinGroupActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         current_user_id = user.getUid();
 
+        FirebaseDatabase.getInstance().getReference("users").child(current_user_id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot ds) {
+                if(ds.exists()) {
+                    name = ds.child("userName").getValue(String.class);
+                    email = ds.child("email").getValue(String.class);
+                    updateLat = ds.child("updated_latitude").getValue(Double.class);
+                    updateLong = ds.child("updated_longitude").getValue(Double.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         reference = FirebaseDatabase.getInstance().getReference("users");
 
         join.setOnClickListener(new View.OnClickListener() {
@@ -58,29 +77,19 @@ JoinGroupActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()){
-                            UserModel user1 = null;
                             for(DataSnapshot ds: snapshot.getChildren()){
-                                String name = ds.child("userName").getValue(String.class);
-                                String email = ds.child("email").getValue(String.class);
-                                String code = ds.child("code").getValue(String.class);
-                                String isSharing = ds.child("isSharing").getValue(String.class);
-                                Double lat = ds.child("userLatitude").getValue(Double.class);
-                                Double lng = ds.child("userLongitude").getValue(Double.class);
-                                String uri = ds.child("uri").getValue(String.class);
-                                String userId = ds.child("userId").getValue(String.class);
-                                Double geoLat = ds.child("geofenceLat").getValue(Double.class);
-                                Double geoLong = ds.child("geofenceLong").getValue(Double.class);
-                                user1 = new UserModel(userId, name, email, code, uri, isSharing, lat, lng, geoLat, geoLong);
-                                join_user_id = user1.userId;
+                                join_user_id = ds.child("userId").getValue(String.class);
 
+                                reference.child(current_user_id).child("joinedGroupId").child(join_user_id).child("adminId").setValue(join_user_id);
                                 groupReference = FirebaseDatabase.getInstance().getReference("users")
                                         .child(join_user_id).child("GroupMembers");
 
-                                GroupJoinModel groupJoin = new GroupJoinModel(current_user_id);
-                                GroupJoinModel groupJoin1 = new GroupJoinModel(join_user_id);
-
-                                groupReference.child(user.getUid()).setValue(groupJoin)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                groupReference.child(user.getUid()).child("userName").setValue(name);
+                                groupReference.child(user.getUid()).child("email").setValue(email);
+                                groupReference.child(user.getUid()).child("groupMemberId").setValue(current_user_id);
+                                groupReference.child(user.getUid()).child("updated_latitude").setValue(updateLat);
+                                groupReference.child(user.getUid()).child("updated_longitude").setValue(updateLong).
+                                        addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){

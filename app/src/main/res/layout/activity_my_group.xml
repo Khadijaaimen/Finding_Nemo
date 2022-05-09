@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,236 +8,241 @@
     tools:context=".circleActivities.MyGroupActivity">
 
     <RelativeLayout
-        android:id="@+id/groupInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/homeBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_home"
-            android:background="@null"
-            app:tint="@color/white"
-            android:elevation="6dp"
-            android:layout_alignEnd="@id/img_background"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            tools:ignore="ContentDescription" />
-
-        <ImageView
-            android:id="@+id/img_background"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@drawable/gradient_bg"
-            android:contentDescription="@string/app_name" />
-
         <RelativeLayout
-            android:id="@+id/groupIconLayout"
+            android:id="@+id/groupInfo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_background"
-            android:layout_marginTop="-80dp">
-
-            <ProgressBar
-                android:id="@+id/progressBarIcon"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:elevation="5dp"
-                android:visibility="gone" />
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/cameraIcon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignEnd="@id/imageCardView"
-                android:layout_alignBottom="@+id/imageCardView"
-                android:background="@drawable/camera_group_bg"
-                android:contentDescription="@string/app_name"
-                android:elevation="3dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_camera"
-                app:tint="@color/white" />
+                android:id="@+id/homeBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignEnd="@id/img_background"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@null"
+                android:elevation="6dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/white"
+                tools:ignore="ContentDescription" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imageCardView"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="70dp"
-                app:cardElevation="2dp">
+            <ImageView
+                android:id="@+id/img_background"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@drawable/gradient_bg"
+                android:contentDescription="@string/app_name" />
+
+            <RelativeLayout
+                android:id="@+id/groupIconLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_background"
+                android:layout_marginTop="-80dp">
+
+                <ProgressBar
+                    android:id="@+id/progressBarIcon"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:elevation="5dp"
+                    android:visibility="gone" />
 
                 <ImageView
-                    android:id="@+id/nav_header_view_profilePic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:id="@+id/cameraIcon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignEnd="@id/imageCardView"
+                    android:layout_alignBottom="@+id/imageCardView"
+                    android:background="@drawable/camera_group_bg"
                     android:contentDescription="@string/app_name"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/user_icon" />
+                    android:elevation="3dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_camera"
+                    app:tint="@color/white" />
 
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/imageCardView"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    app:cardCornerRadius="70dp"
+                    app:cardElevation="2dp">
+
+                    <ImageView
+                        android:id="@+id/nav_header_view_profilePic"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/user_icon" />
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/groupNameEditing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/groupInfo"
-        android:gravity="center_vertical|center"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/groupNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/mitr_medium"
-            android:gravity="center"
-            android:importantForAutofill="no"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:text="@string/group_name"
-            android:textColor="@color/teal_700"
-            android:textSize="25sp"
-            tools:ignore="LabelFor" />
-
-        <ImageButton
-            android:id="@+id/editBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@string/app_name"
-            android:gravity="center"
-            android:src="@drawable/ic_edit" />
-
-        <ImageView
-            android:id="@+id/checkBtn"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:background="@null"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@string/app_name"
-            android:gravity="center"
-            android:src="@drawable/ic_round_check"
-            android:visibility="gone"
-            app:tint="@color/teal_700" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/quote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/groupNameEditing"
-        android:fontFamily="sans-serif-condensed"
-        android:gravity="center"
-        android:text="@string/have_a_good_time"
-        android:textColor="#BE3A3C3C"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:id="@+id/addGeofence"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quote"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:orientation="vertical">
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/groupNameEditing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/groupInfo"
+            android:gravity="center_vertical|center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/groupNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mitr_medium"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="textCapWords"
+                android:maxLines="1"
+                android:text="@string/group_name"
+                android:textColor="@color/teal_700"
+                android:textSize="25sp"
+                tools:ignore="LabelFor" />
+
+            <ImageButton
+                android:id="@+id/editBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/app_name"
+                android:gravity="center"
+                android:src="@drawable/ic_edit" />
+
+            <ImageView
+                android:id="@+id/checkBtn"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/app_name"
+                android:gravity="center"
+                android:src="@drawable/ic_round_check"
+                android:visibility="gone"
+                app:tint="@color/teal_700" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/quote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/groupNameEditing"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="@string/have_a_good_time"
+            android:textColor="#BE3A3C3C"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/addGeofence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quote"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/mitr_medium"
-            android:text="@string/current_tracking_location"
-            android:textColor="@color/teal_700"
-            android:textSize="20sp" />
+            android:layout_marginEnd="30dp"
+            android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/geofenceLat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/latitude">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/longitude"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:drawableStart="@drawable/latitude_icon_size"
-                android:drawablePadding="20dp"
-                android:editable="false"
-                android:textSize="18sp" />
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/mitr_medium"
+                android:text="@string/current_tracking_location"
+                android:textColor="@color/teal_700"
+                android:textSize="20sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/geofenceLong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/longitude">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/latitude"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/geofenceLat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/latitude">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:drawableStart="@drawable/latitude_icon_size"
+                    android:drawablePadding="20dp"
+                    android:editable="false"
+                    android:textSize="18sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/geofenceLong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/longitude">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/latitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:drawableStart="@drawable/longitude_icon_size"
+                    android:drawablePadding="20dp"
+                    android:editable="false"
+                    android:textSize="18sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/participants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addGeofence"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/participant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/mitr_medium"
+                android:text="@string/participants"
+                android:textColor="@color/teal_700"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/addMemberImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@color/white"
-                android:drawableStart="@drawable/longitude_icon_size"
-                android:drawablePadding="20dp"
-                android:editable="false"
-                android:textSize="18sp" />
+                android:contentDescription="@string/app_name"
+                android:elevation="5dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_person_add"
+                android:tooltipText="@string/invite_member"
+                app:tint="@color/teal_700"
+                tools:targetApi="o" />
+        </LinearLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/participants"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addGeofence"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables">
-
-        <TextView
-            android:id="@+id/participant"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/mitr_medium"
-            android:text="@string/participants"
-            android:textColor="@color/teal_700"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/addMemberImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/white"
-            android:contentDescription="@string/app_name"
-            android:elevation="5dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_person_add"
-            android:tooltipText="@string/invite_member"
-            app:tint="@color/teal_700"
-            tools:targetApi="o" />
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/participants"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_layout" />
-</RelativeLayout>
+            android:layout_below="@id/participants"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/card_layout" />
+    </RelativeLayout>
+</ScrollView>
