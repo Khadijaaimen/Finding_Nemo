@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.findingnemo.circleActivities.MyNavigationActivity;
+import com.example.findingnemo.circleActivities.NotificationCheckPreference;
 import com.example.findingnemo.modelClasses.UpdatingLocations;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -52,6 +53,7 @@ public class GeofenceLocationService extends Service {
     String name;
     List<Double> distanceList = new ArrayList<>();
     ArrayList<String> userIds = new ArrayList<>();
+    Integer countEntered = 0, countLeft = 0;
 
     private final LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -67,54 +69,53 @@ public class GeofenceLocationService extends Service {
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
                 reference.child(id).child("updated_latitude").setValue(location.getLatitude());
                 reference.child(id).child("updated_longitude").setValue(location.getLongitude());
-
-                FirebaseDatabase.getInstance().getReference("users").child(id)
-                        .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            geoLat = snapshot.child("geofenceLat").getValue(Double.class);
-                            geoLng = snapshot.child("geofenceLong").getValue(Double.class);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-                FirebaseDatabase.getInstance().getReference("users").child(id).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        if(snapshot.child("GroupMembers").exists()){
-                            for (DataSnapshot ds: snapshot.child("GroupMembers").getChildren()) {
-                                lat = ds.child("updated_latitude").getValue(Double.class);
-                                lng = ds.child("updated_longitude").getValue(Double.class);
-                                name = ds.child("userName").getValue(String.class);
-//                                meterDistanceBetweenPoints(geoLat, geoLng, lat, lng);
-                            }
-                        }
-
-                        if(snapshot.child("joinedGroupId").exists()){
-                            for (DataSnapshot ds : snapshot.child("joinedGroupId").getChildren()) {
-                                String uid = ds.child("adminId").getValue(String.class);
-                                FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_latitude").setValue(location.getLatitude());
-                                FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_longitude").setValue(location.getLongitude());
-                            }
-                        }
-//
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
             }
+
+            FirebaseDatabase.getInstance().getReference("users").child(id)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                geoLat = snapshot.child("geofenceLat").getValue(Double.class);
+                                geoLng = snapshot.child("geofenceLong").getValue(Double.class);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+            FirebaseDatabase.getInstance().getReference("users").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if (snapshot.child("GroupMembers").exists()) {
+                        for (DataSnapshot ds : snapshot.child("GroupMembers").getChildren()) {
+                            lat = ds.child("updated_latitude").getValue(Double.class);
+                            lng = ds.child("updated_longitude").getValue(Double.class);
+                            name = ds.child("userName").getValue(String.class);
+                            meterDistanceBetweenPoints(geoLat, geoLng, lat, lng);
+                        }
+                    }
+
+                    if (snapshot.child("joinedGroupId").exists()) {
+                        for (DataSnapshot ds : snapshot.child("joinedGroupId").getChildren()) {
+                            String uid = ds.child("adminId").getValue(String.class);
+                            FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_latitude").setValue(location.getLatitude());
+                            FirebaseDatabase.getInstance().getReference("users").child(uid).child("GroupMembers").child(id).child("updated_longitude").setValue(location.getLongitude());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
     };
 
@@ -187,10 +188,29 @@ public class GeofenceLocationService extends Service {
         distanceList.add(distance);
 
         notificationHelper = new GeofenceNotificationHelper(GeofenceLocationService.this);
-        if (distance < 400) {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has entered geofence.", MyNavigationActivity.class);
-        } else {
-            notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has left geofence.", MyNavigationActivity.class);
+        if (!NotificationCheckPreference.isNotificationSent(getApplicationContext())) {
+            if (distance < 400) {
+                notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has entered geofence.", GeofenceLocationService.class);
+                countEntered++;
+            } else {
+                notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has left geofence.", GeofenceLocationService.class);
+                countLeft++;
+            }
+            NotificationCheckPreference.setNotificationSent(getApplicationContext(), true);
+        } else if (countEntered > 0) {
+            if (distance > 400) {
+                notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has left geofence.", GeofenceLocationService.class);
+                countEntered--;
+                countLeft++;
+                NotificationCheckPreference.setNotificationSent(getApplicationContext(), true);
+            }
+        } else if (countLeft > 0) {
+            if (distance < 400) {
+                notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has entered geofence.", GeofenceLocationService.class);
+                countEntered++;
+                countLeft--;
+                NotificationCheckPreference.setNotificationSent(getApplicationContext(), true);
+            }
         }
     }
 
@@ -198,6 +218,7 @@ public class GeofenceLocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         fusedLocationClient.removeLocationUpdates(locationCallback);
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
     }
 
     @Nullable

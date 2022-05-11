@@ -155,11 +155,11 @@ public class MyGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 circleName.setText("");
+                circleName.setHint("Type Name");
                 circleName.setClickable(true);
                 circleName.requestFocus();
                 circleName.setCursorVisible(true);
                 editButton.setVisibility(View.GONE);
-                circleName.setHint("Type Name");
                 check.setVisibility(View.VISIBLE);
             }
         });

@@ -56,10 +56,10 @@ public class GeofenceHelper extends ContextWrapper {
                     return "GEOFENCE_NOT_AVAILABLE";
                 case GeofenceStatusCodes
                         .GEOFENCE_TOO_MANY_GEOFENCES:
-                    return "GEOFENCE_TOO_MANY_GEOFENCES";
+                    return "TOO_MANY_GEOFENCES";
                 case GeofenceStatusCodes
                         .GEOFENCE_TOO_MANY_PENDING_INTENTS:
-                    return "GEOFENCE_TOO_MANY_PENDING_INTENTS";
+                    return "TOO_MANY_PENDING_INTENTS";
             }
         }
         return e.getLocalizedMessage();

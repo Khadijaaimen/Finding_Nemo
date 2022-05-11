@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.findingnemo.R;
 import com.example.findingnemo.circleActivities.MembersAdapter;
+import com.example.findingnemo.circleActivities.NotificationCheckPreference;
 import com.example.findingnemo.circleActivities.Util;
 import com.example.findingnemo.geofencing.GeofenceLocationService;
 import com.example.findingnemo.googleMaps.GpsTracker;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     GpsTracker gpsTracker;
     Double latitudeRefresh, longitudeRefresh;
 
-    GeofenceLocationService mLocationService;
-    Intent mServiceIntent;
     private static final int MY_FINE_LOCATION_REQUEST = 99;
     private static final int MY_BACKGROUND_LOCATION_REQUEST = 100;
 
@@ -86,57 +85,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         acct = FirebaseAuth.getInstance().getCurrentUser();
         if (isNetwork(getApplicationContext())) {
             if (acct != null) {
-
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
-
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                            alertDialog.setTitle("Background permission");
-                            alertDialog.setMessage(R.string.background_location_permission_message);
-                            alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    starServiceFunc();
-                                }
-                            });
-                            alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    requestBackgroundLocationPermission();
-                                }
-                            });
-                            alertDialog.create().show();
-
-                        } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-                            starServiceFunc();
-                        }
-                    } else {
-                        starServiceFunc();
-                    }
-
-                } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("ACCESS_FINE_LOCATION")
-                                .setMessage("Location permission required")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        requestFineLocationPermission();
-                                    }
-                                }).create().show();
-                    } else {
-                        requestFineLocationPermission();
-                    }
-                }
-
                 permission = new PermissionManager() {
                 };
                 permission.checkAndRequestPermissions(this);
@@ -285,55 +233,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                                alertDialog.setTitle("Background permission");
-                                alertDialog.setMessage(R.string.background_location_permission_message);
-                                alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        starServiceFunc();
-                                    }
-                                });
-                                alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        requestBackgroundLocationPermission();
-                                    }
-                                });
-                                alertDialog.create().show();
-
-                            } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED) {
-                                starServiceFunc();
-                            }
-                        } else {
-                            starServiceFunc();
-                        }
-
-                    } else if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("ACCESS_FINE_LOCATION")
-                                    .setMessage("Location permission required")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            requestFineLocationPermission();
-                                        }
-                                    }).create().show();
-                        } else {
-                            requestFineLocationPermission();
-                        }
-                    }
                     FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -411,24 +310,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
-    private void starServiceFunc() {
-        mLocationService = new GeofenceLocationService();
-        mServiceIntent = new Intent(this, GeofenceLocationService.class);
-        if (!Util.isMyServiceRunning(GeofenceLocationService.class, this)) {
-            startService(mServiceIntent);
-        } else {
-            Toast.makeText(this, "Service already running", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void requestBackgroundLocationPermission() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, MY_BACKGROUND_LOCATION_REQUEST);
-    }
-
-    private void requestFineLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, MY_FINE_LOCATION_REQUEST);
     }
 
     @Override
@@ -454,19 +340,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
             return;
         }
-
-        if (requestCode == MY_BACKGROUND_LOCATION_REQUEST) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Background location Permission Granted", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, "Background location permission denied", Toast.LENGTH_LONG).show();
-            }
-            return;
-        }
     }
 
     @Override
@@ -485,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onClick(DialogInterface dialog, int id) {
                         finishAffinity();
                         finish();
+                        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
                     }
                 });
 
@@ -507,6 +381,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onComplete(@NonNull Task<Void> task) {
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
     }
 }
 

@@ -27,6 +27,11 @@
                 android:id="@+id/add_geofence"
                 android:icon="@drawable/ic_location"
                 android:title="@string/add_geofence" />
+
+            <item
+                android:id="@+id/stop_sharing"
+                android:icon="@drawable/ic_location_off"
+                android:title="Stop Sharing Location" />
         </menu>
 
     </item>

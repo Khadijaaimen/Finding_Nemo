@@ -7,15 +7,13 @@ import android.util.Log;
 
 public class Util {
     public static Boolean isMyServiceRunning(Class<?> serviceClass, Activity mActivity) {
-        ActivityManager manager = (ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName() == service.service.getClassName()) {
-                Log.i("Service status", "Running");
-                return true;
+            ActivityManager manager = (ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
             }
+            return false;
         }
-        Log.i("Service status", "Not running");
-        return false;
-    }
 
 }

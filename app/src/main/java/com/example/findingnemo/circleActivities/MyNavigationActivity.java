@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.example.findingnemo.generalActivities.MainActivity;
 import com.example.findingnemo.generalActivities.ProfileActivity;
 import com.example.findingnemo.R;
 import com.example.findingnemo.geofencing.GeofenceHelper;
+import com.example.findingnemo.geofencing.GeofenceLocationService;
 import com.example.findingnemo.googleMaps.GpsTracker;
 import com.example.findingnemo.modelClasses.UserModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -48,6 +50,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -77,9 +80,12 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
     Button okButton, yesButton, noButton;
     Dialog dialog;
     TextView textView;
+    GpsTracker gpsTracker;
     GeofencingClient geofencingClient;
     GeofenceHelper geofenceHelper;
     Double latitudeRefresh, longitudeRefresh, latCard, longCard, geoLat, geoLong;
+    GeofenceLocationService mLocationService;
+    Intent mServiceIntent;
 
     private final int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private final int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
@@ -92,6 +98,58 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (ActivityCompat.checkSelfPermission(MyNavigationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                if (ActivityCompat.checkSelfPermission(MyNavigationActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyNavigationActivity.this);
+                    alertDialog.setTitle("Background permission");
+                    alertDialog.setMessage(R.string.background_location_permission_message);
+                    alertDialog.setPositiveButton("Start service anyway", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            starServiceFunc();
+                        }
+                    });
+                    alertDialog.setNegativeButton("Grant background Permission", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestBackgroundLocationPermission();
+                        }
+                    });
+                    alertDialog.create().show();
+
+                } else if (ActivityCompat.checkSelfPermission(MyNavigationActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    starServiceFunc();
+                }
+            } else {
+                starServiceFunc();
+            }
+
+        } else if (ActivityCompat.checkSelfPermission(MyNavigationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MyNavigationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new AlertDialog.Builder(MyNavigationActivity.this)
+                        .setTitle("ACCESS_FINE_LOCATION")
+                        .setMessage("Location permission required")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestFineLocationPermission();
+                            }
+                        }).create().show();
+            } else {
+                requestFineLocationPermission();
+            }
+        }
+
+        gpsTracker = new GpsTracker(MyNavigationActivity.this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("321727690748-eb5mvpu5b5gq1h0gcvf34e5v3kv31e9s.apps.googleusercontent.com")
@@ -211,6 +269,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
     }
 
     public void onBackPressed() {
+
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -225,6 +284,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
                         public void onClick(DialogInterface dialog, int id) {
                             finishAffinity();
                             finish();
+                            NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
                         }
                     });
 
@@ -264,7 +324,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, "My Invitation Code is: \n" + code);
-            startActivity(Intent.createChooser(i, "\bUse your invite code.\b Share Using: "));
+            startActivity(Intent.createChooser(i, "\bUse your invite code.\bShare Using: "));
         } else if (id == R.id.nav_logout) {
             if (acct != null) {
                 FirebaseAuth.getInstance().signOut();
@@ -287,6 +347,15 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             View parentLayout = findViewById(android.R.id.content);
             Snackbar.make(parentLayout, "Please press for a few seconds on map to add geofence.", Snackbar.LENGTH_LONG)
                     .show();
+        } else if(id == R.id.stop_sharing){
+            mLocationService = new GeofenceLocationService();
+            mServiceIntent = new Intent(this, GeofenceLocationService.class);
+            if (Util.isMyServiceRunning(GeofenceLocationService.class, this)) {
+                stopService(mServiceIntent);
+                Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Service already stopped.", Toast.LENGTH_SHORT).show();
+            }
         }
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -313,7 +382,6 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
             e.printStackTrace();
         }
 
-        GpsTracker gpsTracker = new GpsTracker(MyNavigationActivity.this);
         if (gpsTracker.canGetLocation()) {
             latitudeRefresh = gpsTracker.getLatitudeFromNetwork();
             longitudeRefresh = gpsTracker.getLongitudeFromNetwork();
@@ -325,8 +393,6 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         LatLng currentLocation = new LatLng(latitudeRefresh, longitudeRefresh);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
 
-        enableUserLocation();
-
         mMap.setOnMapLongClickListener(MyNavigationActivity.this);
 
         enableUserLocation();
@@ -337,22 +403,34 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //We have the permission
+                try {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MyNavigationActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 mMap.setMyLocationEnabled(true);
             } else {
-                //We do not have the permission..
-
+                gpsTracker.showSettingsAlert();
             }
         }
 
         if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
+
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Background location Permission Granted", Toast.LENGTH_LONG).show();
+                }
             } else {
-                Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Background location permission denied", Toast.LENGTH_LONG).show();
             }
+            return;
         }
     }
 
@@ -420,7 +498,7 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         String errorMessage = geofenceHelper.getErrorString(e);
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         Log.d("TAG", "onFailure: " + errorMessage);
                     }
                 });
@@ -439,5 +517,33 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         circleOptions.fillColor(Color.argb(64, 255, 0, 0));
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
+    }
+
+
+    private void starServiceFunc() {
+        mLocationService = new GeofenceLocationService();
+        mServiceIntent = new Intent(this, GeofenceLocationService.class);
+        if (!Util.isMyServiceRunning(GeofenceLocationService.class, this)) {
+            startService(mServiceIntent);
+        } else {
+            Toast.makeText(this, "Service already running", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void requestBackgroundLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
+    }
+
+    private void requestFineLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
     }
 }

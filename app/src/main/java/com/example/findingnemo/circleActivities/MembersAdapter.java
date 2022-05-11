@@ -15,6 +15,11 @@ import com.example.findingnemo.R;
 import com.example.findingnemo.modelClasses.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,6 +47,37 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
         UserModel userObject = nameList.get(position);
         holder.name_txt.setText(userObject.getUserName());
         Picasso.get().load(userObject.getUri()).placeholder(R.drawable.user_icon).into(holder.circleImageView);
+
+
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getUid())
+                        .child("GroupMembers");
+                reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists()) {
+                                    String memberID = snapshot.child(nameList.get(position).getUserId()).getKey();
+                                    reference.child(memberID).removeValue();
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users")
+                                            .child(memberID).child("joinedGroupId");
+                                    String adminID = databaseReference.child(FirebaseAuth.getInstance().getUid()).getKey();
+                                    databaseReference.child(adminID).removeValue();
+                                    nameList.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyItemRangeRemoved(position, nameList.size());
+                                    return;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+            }
+        });
     }
 
     @Override
@@ -72,13 +108,6 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
             name_txt = itemView.findViewById(R.id.member_title);
             circleImageView = itemView.findViewById(R.id.user_icon);
             deleteButton = itemView.findViewById(R.id.deleteBtn);
-
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
         }
 
         @Override
