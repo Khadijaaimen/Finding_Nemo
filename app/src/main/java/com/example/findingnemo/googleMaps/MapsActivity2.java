@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.findingnemo.R;
+import com.example.findingnemo.circleActivities.NotificationCheckPreference;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -314,6 +315,12 @@ public class MapsActivity2 extends AppCompatActivity implements OnMapReadyCallba
             urlConnection.disconnect();
         }
         return data;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
     }
 }
 

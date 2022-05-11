@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.findingnemo.R;
+import com.example.findingnemo.circleActivities.NotificationCheckPreference;
 import com.example.findingnemo.googleMaps.GpsTracker;
 import com.example.findingnemo.googleMaps.MapsActivity2;
 import com.example.findingnemo.modelClasses.Location;
@@ -538,6 +539,12 @@ public class ProfileActivity extends AppCompatActivity {
                 longitudes.setText(newLongitude);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
     }
 }
 

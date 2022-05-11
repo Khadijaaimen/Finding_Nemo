@@ -120,4 +120,10 @@ JoinGroupActivity extends AppCompatActivity {
         super.onBackPressed();
         JoinGroupActivity.this.finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
+    }
 }

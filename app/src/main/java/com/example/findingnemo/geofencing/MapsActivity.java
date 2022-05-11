@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.findingnemo.R;
+import com.example.findingnemo.circleActivities.NotificationCheckPreference;
 import com.example.findingnemo.googleMaps.DirectionsJSONParser;
 import com.example.findingnemo.googleMaps.GpsTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -257,4 +258,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return data;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
+    }
 }
+

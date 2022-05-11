@@ -319,4 +319,10 @@ public class MyGroupActivity extends AppCompatActivity {
             uploadFile();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationCheckPreference.setNotificationSent(getApplicationContext(), false);
+    }
 }
