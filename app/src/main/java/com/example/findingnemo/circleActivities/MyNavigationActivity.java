@@ -260,6 +260,13 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         email = header.findViewById(R.id.userEmail);
         icon = header.findViewById(R.id.userIcon);
 
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MyNavigationActivity.this, ProfileActivity.class));
+            }
+        });
+
         name.setText(acct.getDisplayName());
         email.setText(acct.getEmail());
         Picasso.get().load(acct.getPhotoUrl()).into(icon);
@@ -525,8 +532,6 @@ public class MyNavigationActivity extends AppCompatActivity implements Navigatio
         mServiceIntent = new Intent(this, GeofenceLocationService.class);
         if (!Util.isMyServiceRunning(GeofenceLocationService.class, this)) {
             startService(mServiceIntent);
-        } else {
-            Toast.makeText(this, "Service already running", Toast.LENGTH_SHORT).show();
         }
     }
 

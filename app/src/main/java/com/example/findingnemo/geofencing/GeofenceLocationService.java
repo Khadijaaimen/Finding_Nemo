@@ -207,7 +207,7 @@ public class GeofenceLocationService extends Service {
         } else if (countLeft > 0) {
             if (distance < 400) {
                 notificationHelper.sendHighPriorityNotification("Tracking Location", name + " has entered geofence.", GeofenceLocationService.class);
-                countEntered++;
+                 countEntered++;
                 countLeft--;
                 NotificationCheckPreference.setNotificationSent(getApplicationContext(), true);
             }

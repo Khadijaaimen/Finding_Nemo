@@ -52,7 +52,7 @@ JoinGroupActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("users").child(current_user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
-                if(ds.exists()) {
+                if (ds.exists()) {
                     name = ds.child("userName").getValue(String.class);
                     email = ds.child("email").getValue(String.class);
                     updateLat = ds.child("updated_latitude").getValue(Double.class);
@@ -76,8 +76,8 @@ JoinGroupActivity extends AppCompatActivity {
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            for(DataSnapshot ds: snapshot.getChildren()){
+                        if (snapshot.exists()) {
+                            for (DataSnapshot ds : snapshot.getChildren()) {
                                 join_user_id = ds.child("userId").getValue(String.class);
 
                                 reference.child(current_user_id).child("joinedGroupId").child(join_user_id).child("adminId").setValue(join_user_id);
@@ -90,15 +90,16 @@ JoinGroupActivity extends AppCompatActivity {
                                 groupReference.child(user.getUid()).child("updated_latitude").setValue(updateLat);
                                 groupReference.child(user.getUid()).child("updated_longitude").setValue(updateLong).
                                         addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Intent intent = new Intent(JoinGroupActivity.this, MyNavigationActivity.class);
-                                            Toast.makeText(getApplicationContext(), "Joined Successfully!", Toast.LENGTH_SHORT).show();
-                                            startActivity(intent);
-                                        }
-                                    }
-                                });
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+//                                                    Intent intent = new Intent(JoinGroupActivity.this, MyNavigationActivity.class);
+                                                    pinview.setValue("");
+                                                    Toast.makeText(getApplicationContext(), "Joined Successfully!", Toast.LENGTH_SHORT).show();
+//                                                    startActivity(intent);
+                                                }
+                                            }
+                                        });
 
                             }
                         } else {

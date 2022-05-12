@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +68,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MembersH
                                     nameList.remove(position);
                                     notifyItemRemoved(position);
                                     notifyItemRangeRemoved(position, nameList.size());
-                                    return;
+                                    Toast.makeText(context, "Member Deleted Successfully!", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
